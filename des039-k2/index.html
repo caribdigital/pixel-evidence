@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLC-DES-039 Pixel-Pass Evidence — round 2, build 9966971a</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; background: #0f172a; color: #e2e8f0; }
+  header { padding: 28px 32px; background: linear-gradient(120deg,#0e2a47,#0f172a); border-bottom: 1px solid #1e293b; }
+  h1 { margin: 0 0 6px; font-size: 22px; }
+  header p { margin: 4px 0; color: #94a3b8; font-size: 14px; }
+  .meta { font-family: monospace; color: #38bdf8; }
+  main { padding: 24px 32px 64px; max-width: 1500px; margin: 0 auto; }
+  section { margin: 40px 0; }
+  h2 { font-size: 18px; border-left: 4px solid #22d3ee; padding-left: 10px; margin-bottom: 4px; }
+  .sub { color: #94a3b8; font-size: 13px; margin: 0 0 16px 14px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 20px; }
+  figure { margin: 0; background: #1e293b; border: 1px solid #334155; border-radius: 10px; overflow: hidden; }
+  figure img { width: 100%; display: block; background: #fff; cursor: zoom-in; }
+  figcaption { padding: 10px 12px; font-size: 13px; color: #cbd5e1; }
+  figcaption b { color: #f1f5f9; }
+  .ok { background: #052e2b; border: 1px solid #14b8a6; color: #99f6e4; padding: 12px 16px; border-radius: 8px; font-size: 14px; }
+  .full img { cursor: zoom-out; position: fixed; inset: 0; width: 100vw; height: 100vh; object-fit: contain; background: #000; z-index: 50; }
+  ul.delta { color: #cbd5e1; font-size: 13px; line-height: 1.6; margin: 6px 0 0 14px; }
+  code { font-family: monospace; color: #7dd3fc; }
+</style>
+</head>
+<body>
+<header>
+  <h1>CLC-DES-039 — Import Redesign Pixel-Pass Evidence (round 2)</h1>
+  <p>Delta captures for Kai's round-2 re-verify, after the round-1 fixes (D-039-PIXELPASS-R1) landed on master.</p>
+  <p>Build: <span class="meta">9966971a</span> &nbsp;·&nbsp; captured locally via the DES039 K2 harness against a Development app &nbsp;·&nbsp; business: Etienne Island Retail.</p>
+  <p><b>How to validate:</b> click any image for full-screen. Each surface below is a raw PNG (no PDF re-encode), so chip colours read directly.</p>
+</header>
+<main>
+
+  <section>
+    <h2>Round-1 → round-2 delta (what changed)</h2>
+    <ul class="delta">
+      <li><b>B-D1</b> — the arithmetic-error row now renders the <b>Arithmetic</b> chip (was falling to Ready).</li>
+      <li><b>B-D2</b> — duplicate pair flags <b>Duplicate</b> at Review + is <b>excluded from the commit by default</b> (no surprise failure at import); prior-reference caption added.</li>
+      <li><b>B-D3</b> — the CTA states what lands: <code>Import {n} rows</code> (the includable set), never "Import Anyway".</li>
+      <li><b>B-D4</b> — the lodged-period copy is swept off the em dash.</li>
+      <li><b>Check-B5</b> — <b>Ready</b> is a muted <b>outline</b> chip; flagged states stay filled.</li>
+      <li><b>Check-B6</b> — non-food rows read <b>"Not food"</b> (was a bare N/A). The column is kept (it drives the food-VAT split).</li>
+      <li><b>Polish-B7</b> — the VAT-treatment caption drops the duplicated rate.</li>
+      <li><b>Slice D §6</b> — the receipt now renders on <b>every completed commit</b>, clean OR partial, with a four-count row (Imported / Held / Excluded / Failed).</li>
+      <li><b>FF-A1</b> — the QuickBooks helper is restored to Cass's ruled verbatim ("a mapping you confirm").</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Slice A — Source cards (#3974, PASS + FF-A1)</h2>
+    <p class="sub">Six source cards. Verify the <b>Bank card gated</b> ("Available after beta", dashed, block icon — the #3983 descope) and, on A3, the <b>restored QuickBooks helper</b> ("QuickBooks tax codes map to the four VAT categories through a mapping you confirm").</p>
+    <div class="grid">
+      <figure><img src="./sliceA/A1-source-grid-desktop-light-9966971a.png" alt="Slice A desktop light"><figcaption><b>A1 · Desktop (light)</b> — source-card grid, recognized chips, Bank gated.</figcaption></figure>
+      <figure><img src="./sliceA/A1-source-grid-desktop-dark-9966971a.png" alt="Slice A desktop dark"><figcaption><b>A1 · Desktop (dark)</b> — dark-mode parity.</figcaption></figure>
+      <figure><img src="./sliceA/A2-source-grid-mobile-9966971a.png" alt="Slice A mobile"><figcaption><b>A2 · Mobile (390×844)</b> — cards stack.</figcaption></figure>
+      <figure><img src="./sliceA/A3-quickbooks-selected-helper-9966971a.png" alt="Slice A QuickBooks selected"><figcaption><b>A3 · QuickBooks selected (Check-A2)</b> — FF-A1 helper on the card face + echo.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Slice B — Review "weather report" (#3975, was NOT PASSED)</h2>
+    <p class="sub">All six row-states now render one-per-row: <b>Row 1 Ready</b> (outline+check) · <b>Row 2 Unclassified</b> · <b>Row 3 Arithmetic</b> · <b>Row 4 Ready</b> (kept dup) · <b>Row 5 Duplicate</b> (excluded caption) · <b>Row 6 Rate-date</b> · <b>Row 7 Lodged period</b>. Summary strip <b>2·3·2</b>, CTA <b>"Import 5 rows"</b>, "Not food", "Standard-Rated" (no duplicated rate).</p>
+    <div class="grid">
+      <figure><img src="./sliceB/B1-review-weather-report-light-9966971a.png" alt="Slice B light"><figcaption><b>B1 · Weather report (light)</b> — six row-states, corrected CTA, outline Ready chip.</figcaption></figure>
+      <figure><img src="./sliceB/B1-review-weather-report-dark-9966971a.png" alt="Slice B dark"><figcaption><b>B1 · Weather report (dark)</b> — dark-mode parity.</figcaption></figure>
+      <figure><img src="./sliceB/B4-unclassified-hold-9966971a.png" alt="Slice B unclassified"><figcaption><b>B4 · Unclassified hold</b> — the safe-hold row (deterministic via the unmapped-category row).</figcaption></figure>
+      <figure><img src="./sliceB/B5-lodged-period-panel-9966971a.png" alt="Slice B lodged"><figcaption><b>B5 · Lodged-period panel</b> — a row in an already-lodged period, swept copy.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Slice D — Import receipt (#3976, ruled §6 defect)</h2>
+    <p class="sub">The receipt now renders on <b>every completed commit</b>. <b>D1 (clean):</b> green "Import complete", four-count <b>Imported 4 / Held 0 / Excluded 0 / Failed 0</b>. <b>D2 (partial):</b> the all-states fixture excludes the duplicate + lodged rows → <b>Imported 4 / Held 1 / Excluded 2 / Failed 0</b> with the filing-block continuity notice. (The Excluded=2 required a save-funnel fix — an exact-content duplicate with no invoice number is now excluded at commit, so the receipt matches what the Review promised.)</p>
+    <div class="grid">
+      <figure><img src="./sliceD/D1-receipt-clean-9966971a.png" alt="Slice D clean receipt"><figcaption><b>D1 · Clean import</b> — green "Import complete" + actor · timestamp · source · SHA-256 · batch link.</figcaption></figure>
+      <figure><img src="./sliceD/D2-receipt-partial-9966971a.png" alt="Slice D partial receipt"><figcaption><b>D2 · Partial import</b> — receipt on a partial commit + Excluded=2 + filing-block notice.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>#4018 — ReefField background (motion 0/2/4s)</h2>
+    <p class="sub">Timestamped stills so displacement can be measured against the parameter set: landing (atmosphere-full) + login (atmosphere-calm) at t=0s / 2s / 4s, plus the reduced-motion static composition.</p>
+    <div class="grid">
+      <figure><img src="./reef/R-landing-full-0s-9966971a.png" alt="reef landing 0s"><figcaption><b>Landing · t=0s</b></figcaption></figure>
+      <figure><img src="./reef/R-landing-full-2s-9966971a.png" alt="reef landing 2s"><figcaption><b>Landing · t=2s</b></figcaption></figure>
+      <figure><img src="./reef/R-landing-full-4s-9966971a.png" alt="reef landing 4s"><figcaption><b>Landing · t=4s</b></figcaption></figure>
+      <figure><img src="./reef/R-login-calm-0s-9966971a.png" alt="reef login 0s"><figcaption><b>Login · t=0s</b> (atmosphere-calm)</figcaption></figure>
+      <figure><img src="./reef/R-login-calm-2s-9966971a.png" alt="reef login 2s"><figcaption><b>Login · t=2s</b></figcaption></figure>
+      <figure><img src="./reef/R-login-calm-4s-9966971a.png" alt="reef login 4s"><figcaption><b>Login · t=4s</b></figcaption></figure>
+      <figure><img src="./reef/R-landing-reduced-motion-9966971a.png" alt="reef reduced motion"><figcaption><b>Reduced-motion</b> — full static composition, zero movement.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <p class="ok"><b>Provenance:</b> every image is stamped with build <code>9966971a</code> (in the filename and the per-slice <code>_capture-manifest.tsv</code>), captured against a Development app running that exact binary. Renders are build-determined, so these are valid evidence for the delta re-verify.</p>
+  </section>
+
+</main>
+<script>
+  document.querySelectorAll('figure img').forEach(img => {
+    img.addEventListener('click', () => img.closest('figure').classList.toggle('full'));
+  });
+</script>
+</body>
+</html>
