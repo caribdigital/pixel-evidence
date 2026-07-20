@@ -1,0 +1,107 @@
+diff --git a/docs/decisions/RULING_ID_MANIFEST.md b/docs/decisions/RULING_ID_MANIFEST.md
+index 28d18473..abdd1f57 100644
+--- a/docs/decisions/RULING_ID_MANIFEST.md
++++ b/docs/decisions/RULING_ID_MANIFEST.md
+@@ -35,6 +35,7 @@ Format: one `` `ID` `` per bullet. The test extracts IDs from this section with
+ - `D-3908-PREPARED-BY-SOURCE` — #3908 report branding · provenance: unconfirmed
+ - `D-3908-Q2-PREPAREDBY-PIXELPASS` — #3908 Kai pixel-pass · provenance: unconfirmed
+ - `D-3950-REPORT-FOOTERS` — report footer ruling · provenance: unconfirmed
++- `D-040-MOTION-SYSTEM` — Kai's CLC-DES-040 Reef Motion System / Responsive register ruling (2026-07-16, supervised Robbie channel): responsive motion (feedback to a user action or state change) is permitted where ambient-instrument motion stays banned; token scale `--motion-micro/small/medium` (120/180/240ms, hard cap 300ms), transform+opacity only, no figure ever animates, prefers-reduced-motion collapses everything · provenance: confirmed — spec archived verbatim `tasks/comply/KAI-HALLMARK-DES040-SPEC-2026-07-16.md`; full text on EPIC #4059. Cited by the responsive-register CSS (coral-animations.css tokens + 03-mudblazor-overrides.css).
+ - `D-3951` — CLC-DES-036 hero/marketing (Kai) · provenance: pre-cascade, confirmed standing (Kai `D-3951-ALIVE-PASS`)
+ - `D-3952` — claim-language ruling (Cass) · provenance: pre-cascade (Cass `D-3952-CLAIM-LANGUAGE`)
+ - `D-3952-CLAIM-LANGUAGE` — REQ-MSG-001 banned-claim ruling (Cass) · provenance: pre-cascade
+diff --git a/src/CoralComply.Web/wwwroot/css/03-mudblazor-overrides.css b/src/CoralComply.Web/wwwroot/css/03-mudblazor-overrides.css
+index ad774723..26f2a9c4 100644
+--- a/src/CoralComply.Web/wwwroot/css/03-mudblazor-overrides.css
++++ b/src/CoralComply.Web/wwwroot/css/03-mudblazor-overrides.css
+@@ -159,6 +159,64 @@ button[data-testid='ram-notify-btn']:disabled {
+     font-size: 1.125rem;
+ }
+ 
++/* ═══════════════════════════════════════════════════════════════════════════════
++   RESPONSIVE REGISTER — CLC-DES-040 M1 (D-040-MOTION-SYSTEM, Kai)
++   Buttons: hover lift 1px + shadow soften; press scale 0.98; 120ms.
++   One token system — retargets the button-variant timing above onto --motion-micro
++   and generalises the lift/press to every variant (filled/outlined/text). Placed
++   AFTER the variant rules so it wins on source order at equal specificity.
++   Transform + box-shadow only. Coral never pulses. prefers-reduced-motion is
++   handled by the global reduce block in coral-animations.css (kills durations).
++   ═══════════════════════════════════════════════════════════════════════════════ */
++.mud-button-root {
++    transition: transform var(--motion-micro) var(--motion-ease-reversible),
++                box-shadow var(--motion-micro) var(--motion-ease-reversible),
++                background-color var(--motion-micro) var(--motion-ease-reversible),
++                border-color var(--motion-micro) var(--motion-ease-reversible),
++                color var(--motion-micro) var(--motion-ease-reversible);
++}
++
++.mud-button-root:hover:not(:disabled):not(.mud-disabled) {
++    transform: translateY(-1px);
++}
++
++.mud-button-root:active:not(:disabled):not(.mud-disabled) {
++    /* Kai's press value supersedes the old translateY(0) settle on the variant rules. */
++    transform: scale(0.98);
++}
++
++/* Icon buttons are targets, not raised surfaces — press only, no lift (a floating
++   icon button reads as decoration). */
++.mud-icon-button:hover:not(:disabled):not(.mud-disabled) {
++    transform: none;
++}
++.mud-icon-button:active:not(:disabled):not(.mud-disabled) {
++    transform: scale(0.92);
++}
++
++/* ── Menus / dropdowns: origin-aware pop (scale 0.96 → 1 + fade), 180ms ──────────
++   Greenfield — no MudMenu/MudSelect popover motion existed. transform-origin at the
++   trigger is set by MudBlazor's popover positioning via the anchor classes; we key
++   the origin off the popover's placement so the pop grows from the trigger edge. */
++.mud-popover.mud-popover-open {
++    animation: motion-popover-in var(--motion-small) var(--motion-ease-standard) both;
++}
++
++/* Placement-aware transform-origin: the popover grows from the edge nearest the trigger.
++   "top-*" = popover sits above its anchor → grow up from the bottom edge; "bottom-*" =
++   sits below → grow down from the top edge; the -left/-center/-right suffix sets the x. */
++.mud-popover-top-left     { transform-origin: left bottom; }
++.mud-popover-top-center   { transform-origin: center bottom; }
++.mud-popover-top-right    { transform-origin: right bottom; }
++.mud-popover-bottom-left  { transform-origin: left top; }
++.mud-popover-bottom-center{ transform-origin: center top; }
++.mud-popover-bottom-right { transform-origin: right top; }
++
++@keyframes motion-popover-in {
++    from { opacity: 0; transform: scale(0.96); }
++    to   { opacity: 1; transform: scale(1); }
++}
++
+ /* ===== CARDS ===== */
+ 
+ .mud-paper {
+diff --git a/src/CoralComply.Web/wwwroot/css/coral-animations.css b/src/CoralComply.Web/wwwroot/css/coral-animations.css
+index 33da8ae2..40a57789 100644
+--- a/src/CoralComply.Web/wwwroot/css/coral-animations.css
++++ b/src/CoralComply.Web/wwwroot/css/coral-animations.css
+@@ -29,6 +29,21 @@
+ 
+   /* Stagger delay for sequential animations */
+   --coral-stagger-delay: 50ms;
++
++  /* ---------------------------------------------------------------------------
++     RESPONSIVE REGISTER — CLC-DES-040 / D-040-MOTION-SYSTEM (Kai)
++     Motion as FEEDBACK to a user action or state change, never decoration.
++     One token system: these purpose-named tokens are the canonical responsive
++     scale (Kai's values win); the speed-named --coral-duration-* above remain
++     for the atmosphere register. Hard cap 300ms in the instrument register.
++     Transform + opacity only. Every consumer must collapse under
++     prefers-reduced-motion (see the reduce block at the foot of this file).
++     --------------------------------------------------------------------------- */
++  --motion-micro: 120ms;   /* hover, press */
++  --motion-small: 180ms;   /* menus, dropdowns, chips, tooltips */
++  --motion-medium: 240ms;  /* dialogs, drawers */
++  --motion-ease-standard: var(--coral-ease-out);       /* one-way (open, appear) */
++  --motion-ease-reversible: var(--coral-ease-in-out);  /* states that go both ways */
+ }
+ 
+ 

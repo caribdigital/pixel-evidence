@@ -1,0 +1,796 @@
+/* ===============================================================================
+   CORAL ANIMATIONS - CoralLedger Design System
+
+   Purpose: Provide consistent, performant animations across the application.
+
+   CRITICAL: All animations must respect prefers-reduced-motion.
+   CRITICAL: No animation should exceed 400ms except loading states.
+   CRITICAL: Never animate properties that cause layout shift (width, height, top, left).
+             Only animate: opacity, transform, filter, clip-path.
+   =============================================================================== */
+
+/* -----------------------------------------------------------------------------
+   TIMING TOKENS
+   ----------------------------------------------------------------------------- */
+
+:root {
+  /* Durations */
+  --coral-duration-instant: 100ms;
+  --coral-duration-fast: 150ms;
+  --coral-duration-normal: 250ms;
+  --coral-duration-slow: 400ms;
+  --coral-duration-deliberate: 600ms;
+
+  /* Easings */
+  --coral-ease-out: cubic-bezier(0.0, 0.0, 0.2, 1);
+  --coral-ease-in: cubic-bezier(0.4, 0.0, 1, 1);
+  --coral-ease-in-out: cubic-bezier(0.4, 0.0, 0.2, 1);
+  --coral-ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Stagger delay for sequential animations */
+  --coral-stagger-delay: 50ms;
+
+  /* ---------------------------------------------------------------------------
+     RESPONSIVE REGISTER — CLC-DES-040 / D-040-MOTION-SYSTEM (Kai)
+     Motion as FEEDBACK to a user action or state change, never decoration.
+     One token system: these purpose-named tokens are the canonical responsive
+     scale (Kai's values win); the speed-named --coral-duration-* above remain
+     for the atmosphere register. Hard cap 300ms in the instrument register.
+     Transform + opacity only. Every consumer must collapse under
+     prefers-reduced-motion (see the reduce block at the foot of this file).
+     --------------------------------------------------------------------------- */
+  --motion-micro: 120ms;   /* hover, press */
+  --motion-small: 180ms;   /* menus, dropdowns, chips, tooltips */
+  --motion-medium: 240ms;  /* dialogs, drawers */
+  --motion-ease-standard: var(--coral-ease-out);       /* one-way (open, appear) */
+  --motion-ease-reversible: var(--coral-ease-in-out);  /* states that go both ways */
+}
+
+
+/* -----------------------------------------------------------------------------
+   KEYFRAME DEFINITIONS
+   ----------------------------------------------------------------------------- */
+
+/* === ENTRANCE ANIMATIONS === */
+
+@keyframes coral-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes coral-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes coral-fade-down {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes coral-slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes coral-slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes coral-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes coral-scale-up {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+
+/* === ATTENTION ANIMATIONS === */
+
+@keyframes coral-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 122, 90, 0.4);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 8px rgba(255, 122, 90, 0);
+  }
+}
+
+@keyframes coral-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(0, 184, 212, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 16px 4px rgba(0, 184, 212, 0.3);
+  }
+}
+
+
+/* === FEEDBACK ANIMATIONS === */
+
+@keyframes coral-success-pop {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes coral-shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-4px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(4px);
+  }
+}
+
+@keyframes coral-bounce-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+/* === LOADING ANIMATIONS === */
+
+@keyframes coral-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes coral-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* === EXIT ANIMATIONS === */
+
+@keyframes coral-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes coral-fade-out-down {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes coral-slide-out-right {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+
+
+/* -----------------------------------------------------------------------------
+   ANIMATION UTILITY CLASSES
+
+   Usage: Add these classes to elements to trigger animations.
+   The animation runs once on the element's first render.
+   ----------------------------------------------------------------------------- */
+
+.coral-animate-fade-in {
+  animation: coral-fade-in var(--coral-duration-normal) var(--coral-ease-out) both;
+}
+
+.coral-animate-fade-up {
+  animation: coral-fade-up var(--coral-duration-normal) var(--coral-ease-out) both;
+}
+
+.coral-animate-fade-down {
+  animation: coral-fade-down var(--coral-duration-normal) var(--coral-ease-out) both;
+}
+
+.coral-animate-slide-in-right {
+  animation: coral-slide-in-right var(--coral-duration-normal) var(--coral-ease-out) both;
+}
+
+.coral-animate-slide-in-left {
+  animation: coral-slide-in-left var(--coral-duration-normal) var(--coral-ease-out) both;
+}
+
+.coral-animate-scale-in {
+  animation: coral-scale-in var(--coral-duration-fast) var(--coral-ease-out) both;
+}
+
+.coral-animate-scale-up {
+  animation: coral-scale-up var(--coral-duration-normal) var(--coral-ease-out) both;
+}
+
+.coral-animate-pulse {
+  animation: coral-pulse var(--coral-duration-deliberate) var(--coral-ease-in-out) 2;
+}
+
+.coral-animate-pulse-infinite {
+  animation: coral-pulse 2s var(--coral-ease-in-out) infinite;
+}
+
+.coral-animate-glow {
+  animation: coral-glow 2s var(--coral-ease-in-out) infinite;
+}
+
+.coral-animate-success-pop {
+  animation: coral-success-pop var(--coral-duration-slow) var(--coral-ease-bounce) both;
+}
+
+.coral-animate-shake {
+  animation: coral-shake var(--coral-duration-slow) var(--coral-ease-in-out) both;
+}
+
+.coral-animate-bounce-in {
+  animation: coral-bounce-in var(--coral-duration-slow) var(--coral-ease-out) both;
+}
+
+/* Exit Animations */
+.coral-animate-fade-out {
+  animation: coral-fade-out var(--coral-duration-normal) var(--coral-ease-in) both;
+}
+
+.coral-animate-fade-out-down {
+  animation: coral-fade-out-down var(--coral-duration-normal) var(--coral-ease-in) both;
+}
+
+.coral-animate-slide-out-right {
+  animation: coral-slide-out-right var(--coral-duration-normal) var(--coral-ease-in) both;
+}
+
+
+/* -----------------------------------------------------------------------------
+   LOADING SKELETON
+
+   Usage: Apply to placeholder elements during data loading.
+   ----------------------------------------------------------------------------- */
+
+.coral-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--coral-gray-200, #E5E7EB) 25%,
+    var(--coral-gray-100, #F1F5F9) 50%,
+    var(--coral-gray-200, #E5E7EB) 75%
+  );
+  background-size: 200% 100%;
+  animation: coral-shimmer 1.5s linear infinite;
+  border-radius: var(--radius-md, 8px);
+}
+
+/* Dark mode skeleton */
+.mud-theme-dark .coral-skeleton,
+[data-theme="dark"] .coral-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--gray-700) 25%,
+    var(--gray-600) 50%,
+    var(--gray-700) 75%
+  );
+  background-size: 200% 100%;
+}
+
+.coral-skeleton-text {
+  height: 1em;
+  width: 100%;
+  margin-bottom: var(--space-2, 0.5rem);
+  border-radius: var(--radius-md, 8px);
+}
+
+.coral-skeleton-heading {
+  height: 1.5em;
+  width: 60%;
+  margin-bottom: var(--space-4, 1rem);
+  border-radius: var(--radius-md, 8px);
+}
+
+.coral-skeleton-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full, 9999px);
+}
+
+.coral-skeleton-card {
+  height: 120px;
+  border-radius: var(--radius-xl, 16px);
+}
+
+.coral-skeleton-button {
+  height: 44px;
+  width: 120px;
+  border-radius: var(--radius-md, 8px);
+}
+
+
+/* -----------------------------------------------------------------------------
+   STAGGERED CHILDREN
+
+   Usage: Add to parent element to animate children sequentially.
+   Each child gets an incremental delay based on its position.
+   ----------------------------------------------------------------------------- */
+
+.coral-stagger-children > * {
+  animation: coral-fade-up var(--coral-duration-normal) var(--coral-ease-out) both;
+}
+
+.coral-stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+.coral-stagger-children > *:nth-child(2) { animation-delay: 50ms; }
+.coral-stagger-children > *:nth-child(3) { animation-delay: 100ms; }
+.coral-stagger-children > *:nth-child(4) { animation-delay: 150ms; }
+.coral-stagger-children > *:nth-child(5) { animation-delay: 200ms; }
+.coral-stagger-children > *:nth-child(6) { animation-delay: 250ms; }
+.coral-stagger-children > *:nth-child(7) { animation-delay: 300ms; }
+.coral-stagger-children > *:nth-child(8) { animation-delay: 350ms; }
+.coral-stagger-children > *:nth-child(9) { animation-delay: 400ms; }
+.coral-stagger-children > *:nth-child(10) { animation-delay: 400ms; }
+.coral-stagger-children > *:nth-child(11) { animation-delay: 400ms; }
+.coral-stagger-children > *:nth-child(12) { animation-delay: 400ms; }
+
+/* Stagger with slide-in-right for horizontal layouts */
+.coral-stagger-slide > * {
+  animation: coral-slide-in-right var(--coral-duration-normal) var(--coral-ease-out) both;
+}
+
+.coral-stagger-slide > *:nth-child(1) { animation-delay: 0ms; }
+.coral-stagger-slide > *:nth-child(2) { animation-delay: 50ms; }
+.coral-stagger-slide > *:nth-child(3) { animation-delay: 100ms; }
+.coral-stagger-slide > *:nth-child(4) { animation-delay: 150ms; }
+.coral-stagger-slide > *:nth-child(5) { animation-delay: 200ms; }
+.coral-stagger-slide > *:nth-child(6) { animation-delay: 250ms; }
+
+
+/* -----------------------------------------------------------------------------
+   DELAY MODIFIERS
+
+   Usage: Combine with animation classes to add delay.
+   Example: class="coral-animate-fade-up coral-delay-100"
+   ----------------------------------------------------------------------------- */
+
+.coral-delay-0 { animation-delay: 0ms !important; }
+.coral-delay-50 { animation-delay: 50ms !important; }
+.coral-delay-100 { animation-delay: 100ms !important; }
+.coral-delay-150 { animation-delay: 150ms !important; }
+.coral-delay-200 { animation-delay: 200ms !important; }
+.coral-delay-300 { animation-delay: 300ms !important; }
+.coral-delay-400 { animation-delay: 400ms !important; }
+/* Note: .coral-delay-500 removed per design system - max animation delay is 400ms */
+
+
+/* -----------------------------------------------------------------------------
+   DURATION MODIFIERS
+
+   Usage: Override default duration.
+   Example: class="coral-animate-fade-in coral-duration-fast"
+   ----------------------------------------------------------------------------- */
+
+.coral-duration-instant { animation-duration: var(--coral-duration-instant) !important; }
+.coral-duration-fast { animation-duration: var(--coral-duration-fast) !important; }
+.coral-duration-normal { animation-duration: var(--coral-duration-normal) !important; }
+.coral-duration-slow { animation-duration: var(--coral-duration-slow) !important; }
+.coral-duration-deliberate { animation-duration: var(--coral-duration-deliberate) !important; }
+
+
+/* -----------------------------------------------------------------------------
+   TRANSITION UTILITIES
+
+   Usage: For hover/focus state transitions (not entrance animations).
+   ----------------------------------------------------------------------------- */
+
+.coral-transition-all {
+  transition: all var(--coral-duration-fast) var(--coral-ease-out);
+}
+
+.coral-transition-colors {
+  transition: color var(--coral-duration-fast) var(--coral-ease-out),
+              background-color var(--coral-duration-fast) var(--coral-ease-out),
+              border-color var(--coral-duration-fast) var(--coral-ease-out);
+}
+
+.coral-transition-opacity {
+  transition: opacity var(--coral-duration-fast) var(--coral-ease-out);
+}
+
+.coral-transition-transform {
+  transition: transform var(--coral-duration-fast) var(--coral-ease-out);
+}
+
+.coral-transition-shadow {
+  transition: box-shadow var(--coral-duration-fast) var(--coral-ease-out);
+}
+
+
+/* -----------------------------------------------------------------------------
+   HOVER EFFECTS
+
+   Usage: Add subtle interactivity to clickable elements.
+   ----------------------------------------------------------------------------- */
+
+.coral-hover-lift {
+  transition: transform var(--coral-duration-fast) var(--coral-ease-out),
+              box-shadow var(--coral-duration-fast) var(--coral-ease-out);
+}
+
+.coral-hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 61, 91, 0.15);
+}
+
+.coral-hover-glow {
+  transition: box-shadow var(--coral-duration-fast) var(--coral-ease-out);
+}
+
+.coral-hover-glow:hover {
+  box-shadow: 0 0 16px rgba(0, 184, 212, 0.3);
+}
+
+.coral-hover-scale {
+  transition: transform var(--coral-duration-fast) var(--coral-ease-out);
+}
+
+.coral-hover-scale:hover {
+  transform: scale(1.02);
+}
+
+.coral-hover-coral {
+  transition: transform var(--coral-duration-fast) var(--coral-ease-out),
+              box-shadow var(--coral-duration-fast) var(--coral-ease-out);
+}
+
+.coral-hover-coral:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 4px 16px rgba(255, 102, 51, 0.2);
+}
+
+
+/* -----------------------------------------------------------------------------
+   EMPTY STATE COMPONENT
+
+   Styles for the CoralEmptyState component - a friendly message when no data.
+   ----------------------------------------------------------------------------- */
+
+.coral-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-16, 4rem) var(--space-8, 2rem);
+  min-height: 200px;
+}
+
+.coral-empty-state-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  margin-bottom: var(--space-6, 1.5rem);
+  border-radius: var(--radius-full, 9999px);
+  background: linear-gradient(135deg, rgba(0, 184, 212, 0.1) 0%, rgba(0, 184, 212, 0.05) 100%);
+  color: var(--coral-accent-primary, #00B8D4);
+}
+
+.coral-empty-state-icon .mud-icon-root {
+  font-size: 40px;
+  opacity: 0.8;
+}
+
+.coral-empty-state-title {
+  margin: 0 0 var(--space-2, 0.5rem) 0;
+  font-family: var(--font-display, 'Poppins', sans-serif);
+  font-size: var(--text-xl, 1.25rem);
+  font-weight: 600;
+  color: var(--coral-text-primary, #1A1A2E);
+}
+
+.coral-empty-state-message {
+  margin: 0 0 var(--space-6, 1.5rem) 0;
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--coral-text-secondary, #6C757D);
+  max-width: 400px;
+  line-height: 1.6; /* Increased from 1.5 for improved readability of longer empty state messages */
+}
+
+.coral-empty-state-content {
+  margin-bottom: 24px;
+}
+
+.coral-empty-state-action {
+  margin-top: 8px;
+}
+
+.coral-empty-state-secondary {
+  margin-top: 8px;
+}
+
+/* Compact variant */
+.coral-empty-state.compact {
+  padding: 24px 16px;
+  min-height: 120px;
+}
+
+.coral-empty-state.compact .coral-empty-state-icon {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 16px;
+}
+
+.coral-empty-state.compact .coral-empty-state-icon .mud-icon-root {
+  font-size: 28px;
+}
+
+.coral-empty-state.compact .coral-empty-state-title {
+  font-size: 1rem;
+}
+
+.coral-empty-state.compact .coral-empty-state-message {
+  margin-bottom: 16px;
+}
+
+/* Dark mode support */
+.mud-theme-dark .coral-empty-state-icon,
+[data-theme="dark"] .coral-empty-state-icon {
+  background: linear-gradient(135deg, var(--deep-sea) 0%, var(--deep-sea-darker) 100%);
+}
+
+.mud-theme-dark .coral-empty-state-title,
+[data-theme="dark"] .coral-empty-state-title {
+  color: var(--gray-200);
+}
+
+.mud-theme-dark .coral-empty-state-message,
+[data-theme="dark"] .coral-empty-state-message {
+  color: var(--gray-400);
+}
+
+
+/* -----------------------------------------------------------------------------
+   SNACKBAR / TOAST ANIMATION OVERRIDES
+
+   Enhance MudBlazor snackbars with coral-branded animations.
+   ----------------------------------------------------------------------------- */
+
+/* Snackbar container - slide in from right */
+.mud-snackbar-provider {
+  /* Ensure snackbars animate properly */
+}
+
+.mud-snackbar {
+  animation: coral-slide-in-right 250ms var(--coral-ease-out) forwards;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Success snackbar - green accent with icon pop */
+.mud-snackbar.mud-alert-severity-success {
+  border-left: 4px solid #4CAF50; /* TOKEN-EXCEPTION: #4CAF50 — material-green toast border — animation system color */
+}
+
+.mud-snackbar.mud-alert-severity-success .mud-icon-root {
+  animation: coral-success-pop 400ms var(--coral-ease-bounce) forwards;
+}
+
+/* Error snackbar - red accent with shake */
+.mud-snackbar.mud-alert-severity-error {
+  border-left: 4px solid #F44336; /* TOKEN-EXCEPTION: #F44336 — material-red toast border — animation system color */
+}
+
+.mud-snackbar.mud-alert-severity-error .mud-icon-root {
+  animation: coral-shake 400ms ease-in-out;
+}
+
+/* Warning snackbar - amber accent with pulse */
+.mud-snackbar.mud-alert-severity-warning {
+  border-left: 4px solid #FF9800; /* TOKEN-EXCEPTION: #FF9800 — material-orange toast border — animation system color */
+}
+
+.mud-snackbar.mud-alert-severity-warning .mud-icon-root {
+  animation: coral-pulse 400ms ease-in-out 2;
+}
+
+/* Info snackbar - reef aqua accent */
+.mud-snackbar.mud-alert-severity-info {
+  border-left: 4px solid var(--reef-aqua, #00B8D4);
+}
+
+/* Closing animation */
+.mud-snackbar.mud-snackbar-exiting {
+  animation: coral-fade-out 200ms ease-out forwards;
+}
+
+/* Close button hover */
+.mud-snackbar .mud-icon-button:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+  transition: background-color 150ms ease-out;
+}
+
+
+/* -----------------------------------------------------------------------------
+   ACCESSIBILITY: REDUCED MOTION
+
+   CRITICAL: All animations MUST be disabled for users who prefer reduced motion.
+   This is not optional--it's an accessibility requirement.
+   ----------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .coral-skeleton {
+    animation: none;
+    background: var(--gray-200);
+  }
+
+  .mud-theme-dark .coral-skeleton,
+  [data-theme="dark"] .coral-skeleton {
+    background: var(--gray-700);
+  }
+
+  /* Keep essential feedback visible without animation */
+  .coral-animate-success-pop,
+  .coral-animate-shake {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+
+/* -----------------------------------------------------------------------------
+   MANUAL ANIMATION CONTROL
+
+   Usage: For Blazor components that need programmatic animation control.
+   Add .coral-animate-manual to prevent auto-play, then add .coral-animate-run
+   via JavaScript/Blazor to trigger the animation.
+   ----------------------------------------------------------------------------- */
+
+.coral-animate-manual {
+  opacity: 0;
+  animation-play-state: paused;
+}
+
+.coral-animate-manual.coral-animate-run {
+  opacity: 1;
+  animation-play-state: running;
+}
+
+
+/* -----------------------------------------------------------------------------
+   LOADING SPINNER
+
+   Usage: Simple spinning indicator for loading states.
+   ----------------------------------------------------------------------------- */
+
+.coral-spinner {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(0, 184, 212, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--reef-aqua);
+  animation: coral-spin 0.8s linear infinite;
+}
+
+.coral-spinner-sm {
+  width: 16px;
+  height: 16px;
+  border-width: 2px;
+}
+
+.coral-spinner-lg {
+  width: 40px;
+  height: 40px;
+  border-width: 3px;
+}
+
+
+/* -----------------------------------------------------------------------------
+   ANIMATION STATE HELPERS
+
+   Usage: Control animation visibility states.
+   ----------------------------------------------------------------------------- */
+
+.coral-hidden-until-animate {
+  opacity: 0;
+}
+
+.coral-visible {
+  opacity: 1;
+}
+
+/* Force GPU acceleration for smoother animations */
+.coral-gpu {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
