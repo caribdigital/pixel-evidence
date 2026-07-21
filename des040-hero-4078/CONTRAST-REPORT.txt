@@ -1,0 +1,21 @@
+aqua_L = 0.390  (subtitle #00B8D4)
+3:1 threshold bg_L = 0.097  (bg above this fails 3:1 locally)
+
+Per frame — max/mean bg luminance in the headline bbox, and the % of the bbox area
+above the 3:1 threshold (i.e. how much of the region a glyph could sit on and lose contrast):
+
+contrast-bbox-0.png: max 0.028 (5.66:1) · mean 0.011 (7.16:1) · 0.00% of area over threshold
+contrast-bbox-1.png: max 0.027 (5.72:1) · mean 0.011 (7.16:1) · 0.00% of area over threshold
+contrast-bbox-2.png: max 0.028 (5.65:1) · mean 0.011 (7.16:1) · 0.00% of area over threshold
+contrast-bbox-3.png: max 0.028 (5.65:1) · mean 0.011 (7.16:1) · 0.00% of area over threshold
+
+WORST single pixel (conservative): contrast-bbox-2.png bg_L=0.028 → 5.65:1
+
+READING: the navy background is comfortable (mean ratio well above 3:1); the failing
+pixels are the bright aqua constellation NODES/edges in the headline zone. The %-over-
+threshold number is the honest risk: it is the share of the headline area where a glyph
+stroke would land on field-brightness above 3:1. Kai's call: bring the node/edge/glow
+values down, OR dim the field in a band behind the headline (the ::after vignette is
+transparent at 42%, right where the headline sits).
+
+GATE (worst-pixel >= 3.0): PASS
