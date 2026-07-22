@@ -1,0 +1,1495 @@
+/* ===================================================================
+   CoralLedger Comply - MudBlazor Component Overrides
+   Purpose: Inject Caribbean fintech brand personality into MudBlazor
+   Week 1, Phase 1.1 - Design System Foundation
+   =================================================================== */
+
+/* ===== STRATEGY =====
+   - Keep MudBlazor functionality intact
+   - Override visual styles with brand tokens
+   - Use specificity and wrapper classes over !important
+   - Maintain accessibility standards
+   - Inject coral reef personality
+   ================================================================== */
+
+/* ===== BUTTONS ===== */
+
+/* Primary Button - Coral Gradient */
+.mud-button-filled.mud-primary,
+.mud-button-filled-primary {
+    background: var(--gradient-coral);
+    color: white;
+    font-weight: var(--font-semibold);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-coral);
+    transition: all var(--transition-base);
+    text-transform: none;
+    letter-spacing: var(--tracking-normal);
+}
+
+.mud-button-filled.mud-primary:hover,
+.mud-button-filled-primary:hover {
+    background: var(--coral-accent);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-1px);
+}
+
+.mud-button-filled.mud-primary:active,
+.mud-button-filled-primary:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-md);
+}
+
+/* ── Kai D-3946 fixes (2026-07-03) ─────────────────────────────────────────────────────────
+   D2: the attestation modal's step-advance buttons rendered TWO colours (coral gradient when
+   disabled — the global filled-primary gradient leaking through MudBlazor's disabled state —
+   vs theme-aqua when enabled). One primary colour in both states, with a true disabled
+   affordance, keyed on the stable testids so nothing else shifts. */
+button[data-testid='ram-next-rules-btn'],
+button[data-testid='ram-proceed-btn'],
+button[data-testid='ram-notify-btn'] {
+    background: var(--reef-aqua, #00B8D4);
+    box-shadow: var(--shadow-md);
+}
+
+button[data-testid='ram-next-rules-btn']:disabled,
+button[data-testid='ram-proceed-btn']:disabled,
+button[data-testid='ram-notify-btn']:disabled {
+    background: var(--mud-palette-action-disabled-background, rgba(0, 0, 0, 0.12));
+    color: var(--mud-palette-action-disabled, rgba(0, 0, 0, 0.26));
+    box-shadow: none;
+}
+
+/* D1: the self-declared disclosure banner's body text measured under the 4.5:1 AA floor
+   (~4.35:1 / 3.68:1 on white). Darken the TEXT to #1565C0 (5.75:1); border + icon stay the
+   lighter info-blue (non-text needs only 3:1). Dark-mode counterpart in 99-dark-mode-overrides. */
+.mud-alert[data-testid='bica-self-declared-banner'] .mud-alert-message {
+    color: #1565C0;
+}
+
+/* Secondary Button - Reef Aqua */
+.mud-button-filled.mud-secondary,
+.mud-button-filled-secondary {
+    background: var(--gradient-reef);
+    color: white;
+    font-weight: var(--font-semibold);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-reef);
+    transition: all var(--transition-base);
+    text-transform: none;
+}
+
+.mud-button-filled.mud-secondary:hover,
+.mud-button-filled-secondary:hover {
+    background: var(--reef-aqua-light);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-1px);
+}
+
+/* Outlined Buttons */
+.mud-button-outlined.mud-primary,
+.mud-button-outlined-primary {
+    border-color: var(--coral-pink);
+    color: var(--coral-pink);
+    font-weight: var(--font-medium);
+    border-radius: var(--radius-md);
+    border-width: 2px;
+    transition: all var(--transition-base);
+    text-transform: none;
+}
+
+.mud-button-outlined.mud-primary:hover,
+.mud-button-outlined-primary:hover {
+    background: rgba(255, 102, 51, 0.08);
+    border-color: var(--coral-accent);
+    color: var(--coral-accent);
+}
+
+.mud-button-outlined.mud-secondary,
+.mud-button-outlined-secondary {
+    border-color: var(--reef-aqua);
+    color: var(--reef-aqua);
+    font-weight: var(--font-medium);
+    border-radius: var(--radius-md);
+    border-width: 2px;
+    transition: all var(--transition-base);
+    text-transform: none;
+}
+
+.mud-button-outlined.mud-secondary:hover,
+.mud-button-outlined-secondary:hover {
+    background: rgba(0, 184, 212, 0.08);
+    border-color: var(--reef-aqua-light);
+    color: var(--reef-aqua-light);
+}
+
+/* Text Buttons */
+.mud-button-text.mud-primary,
+.mud-button-text-primary {
+    color: var(--coral-pink);
+    font-weight: var(--font-medium);
+    transition: all var(--transition-fast);
+    text-transform: none;
+}
+
+.mud-button-text.mud-primary:hover,
+.mud-button-text-primary:hover {
+    background: rgba(255, 102, 51, 0.08);
+    color: var(--coral-accent);
+}
+
+/* Button Sizing */
+.mud-button-root {
+    border-radius: var(--radius-md);
+    font-family: var(--font-body);
+}
+
+.mud-button-root.mud-button-size-small {
+    padding: var(--space-sm) var(--space-md);
+    font-size: 0.875rem;
+}
+
+.mud-button-root.mud-button-size-medium {
+    padding: var(--space-md) var(--space-lg);
+    font-size: 1rem;
+}
+
+.mud-button-root.mud-button-size-large {
+    padding: var(--space-md) var(--space-xl);
+    font-size: 1.125rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   RESPONSIVE REGISTER — CLC-DES-040 M1 (D-040-MOTION-SYSTEM, Kai)
+   Buttons: hover lift 1px + shadow soften; press scale 0.98; 120ms.
+   One token system — retargets the button-variant timing above onto --motion-micro
+   and generalises the lift/press to every variant (filled/outlined/text). Placed
+   AFTER the variant rules so it wins on source order at equal specificity.
+   Transform + box-shadow only. Coral never pulses. prefers-reduced-motion is
+   handled by the global reduce block in coral-animations.css (kills durations).
+   ═══════════════════════════════════════════════════════════════════════════════ */
+.mud-button-root {
+    transition: transform var(--motion-micro) var(--motion-ease-reversible),
+                box-shadow var(--motion-micro) var(--motion-ease-reversible),
+                background-color var(--motion-micro) var(--motion-ease-reversible),
+                border-color var(--motion-micro) var(--motion-ease-reversible),
+                color var(--motion-micro) var(--motion-ease-reversible);
+}
+
+.mud-button-root:hover:not(:disabled):not(.mud-disabled) {
+    transform: translateY(-1px);
+}
+
+.mud-button-root:active:not(:disabled):not(.mud-disabled) {
+    /* Kai's press value supersedes the old translateY(0) settle on the variant rules. */
+    transform: scale(0.98);
+}
+
+/* Icon buttons are targets, not raised surfaces — press only, no lift (a floating
+   icon button reads as decoration). */
+.mud-icon-button:hover:not(:disabled):not(.mud-disabled) {
+    transform: none;
+}
+.mud-icon-button:active:not(:disabled):not(.mud-disabled) {
+    transform: scale(0.92);
+}
+
+/* ── Menus / dropdowns: origin-aware pop (scale 0.96 → 1 + fade), 180ms ──────────
+   Greenfield — no MudMenu/MudSelect popover motion existed. transform-origin at the
+   trigger is set by MudBlazor's popover positioning via the anchor classes; we key
+   the origin off the popover's placement so the pop grows from the trigger edge. */
+.mud-popover.mud-popover-open {
+    animation: motion-popover-in var(--motion-small) var(--motion-ease-standard) both;
+}
+
+/* Placement-aware transform-origin: the popover grows from the edge nearest the trigger.
+   "top-*" = popover sits above its anchor → grow up from the bottom edge; "bottom-*" =
+   sits below → grow down from the top edge; the -left/-center/-right suffix sets the x. */
+.mud-popover-top-left     { transform-origin: left bottom; }
+.mud-popover-top-center   { transform-origin: center bottom; }
+.mud-popover-top-right    { transform-origin: right bottom; }
+.mud-popover-bottom-left  { transform-origin: left top; }
+.mud-popover-bottom-center{ transform-origin: center top; }
+.mud-popover-bottom-right { transform-origin: right top; }
+
+@keyframes motion-popover-in {
+    from { opacity: 0; transform: scale(0.96); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── M2 item 3: theme toggle rotate-swap (D-040-MOTION-SYSTEM, Kai; mechanism per Anya) ──
+   PERSISTENT wrapper — NOT @key'd (a CSS transition can't fire across a Blazor DOM swap
+   because the incoming icon mounts already in final state, and @key forces replacement).
+   Instead this is a CSS ANIMATION triggered by the <body> theme class: when it flips, the
+   newly-matching selector re-applies and the animation replays. Single-slot animates the
+   INCOMING half only (rotate from 90° + fade); the outgoing icon is gone before paint.
+   OPEN to Kai: if "reads as a morph" requires the OUTGOING rotation visible, this becomes
+   the layered cross-fade (both icons persistent) — see the routed question. Reduced-motion
+   collapses via the global reduce block. */
+.theme-icon-wrap {
+    display: inline-flex;
+}
+
+/* Dark and light MUST use different animation-names, or the computed `animation` value
+   doesn't change when the class flips and the browser never restarts it. Two mirrored
+   keyframes also let the icon turn opposite ways per direction — a nicer read. */
+body.mud-theme-dark .theme-icon-wrap {
+    animation: theme-icon-turn-dark var(--motion-small) var(--motion-ease-reversible) both;
+}
+
+body:not(.mud-theme-dark) .theme-icon-wrap {
+    animation: theme-icon-turn-light var(--motion-small) var(--motion-ease-reversible) both;
+}
+
+@keyframes theme-icon-turn-dark {
+    from { opacity: 0; transform: rotate(90deg); }
+    to   { opacity: 1; transform: rotate(0); }
+}
+
+@keyframes theme-icon-turn-light {
+    from { opacity: 0; transform: rotate(-90deg); }
+    to   { opacity: 1; transform: rotate(0); }
+}
+
+/* ── M2 item 4: drawn check stroke draw-in (D-040-MOTION-SYSTEM, Kai) ─────────────────
+   pathLength="1" on the check path → unit dash, offset 1→0. Duration is Kai's explicit
+   200ms for this element — deliberately off the 120/180/240 scale but within the 300ms
+   cap (flagged for his confirm; snap to --motion-medium if he prefers a token). ease-out.
+   Reduced-motion collapses via the global block → the completed check renders instantly. */
+.drawn-check__path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: drawn-check-in 200ms var(--motion-ease-standard) forwards;
+}
+
+@keyframes drawn-check-in {
+    to { stroke-dashoffset: 0; }
+}
+
+/* ── M2 item 5: Unclassified dashed→solid ring (D-040-MOTION-SYSTEM, Kai; per Anya) ──────
+   The solid ring draws IN over the resting dashed circle on a genuine resolution — same
+   pathLength unit-dash technique as the drawn check. 200ms (Kai's ring value), ease-out.
+   The resting dashed circle is static and carries NO animation. Reduced-motion collapses
+   via the global block → the solid ring shows instantly. */
+.dashed-ring__solid {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: dashed-ring-draw 200ms var(--motion-ease-standard) forwards;
+}
+
+@keyframes dashed-ring-draw {
+    to { stroke-dashoffset: 0; }
+}
+
+/* ── M2 item 5: resolved-category chip cross-fade (D-040-MOTION-SYSTEM, Kai; per Anya) ────
+   After the hold ring solidifies, the destination category chip fades in over it (150ms,
+   Kai's cross-fade value) — the delight moment of a genuine resolution in the review queue.
+   Opacity + a slight settle only; the chip's resting opacity is 1, so reduced-motion (which
+   the review-queue also gates in C#) simply shows the chip with no fade. */
+.resolve-crossfade {
+    animation: resolve-crossfade-in 150ms var(--motion-ease-standard) both;
+}
+
+@keyframes resolve-crossfade-in {
+    from { opacity: 0; transform: scale(0.94); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── M3 item 3: state-chip cross-fade on change (D-040-MOTION-SYSTEM, Kai) ────────────────
+   The reusable register form of the M2 resolve cross-fade: any status chip that changes value
+   opts in with `Class="coral-chip-crossfade"` to settle the new state over 150ms (opacity +
+   slight scale, ease-standard, transform+opacity only). Apply it only where the chip genuinely
+   transitions in response to a state change — NOT blanket on grid chips that re-render on every
+   data refresh (magnitude/count never animates; that is the count-up ban). Collapses under the
+   reduced-motion block. This is the same 150ms recipe as `.resolve-crossfade`, named for reuse. */
+.coral-chip-crossfade {
+    animation: resolve-crossfade-in 150ms var(--motion-ease-standard) both;
+}
+
+/* ── M3 item 4: silent-success inline confirmation (D-040-MOTION-SYSTEM, Kai) ──────────────
+   The quiet "Saved" mark for routine saves (SavedIndicator). The check draws itself in
+   (DrawnCheck primitive); the label fades in beside it over --motion-small. Muted success ink,
+   transform+opacity only. Reduced-motion: the label fade collapses via the block below and the
+   check via its own rule — the mark still shows, just without motion. */
+.coral-saved-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--mud-palette-success, #10B981);
+    font-size: 0.8125rem;
+    line-height: 1;
+}
+.coral-saved-indicator__label {
+    animation: coral-saved-label-in var(--motion-small) var(--motion-ease-standard) both;
+}
+
+@keyframes coral-saved-label-in {
+    from { opacity: 0; transform: translateX(-2px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── M2 chevrons: bring MudBlazor's own expand-icon rotation onto the token system ──
+   CLC-DES-040 M2 item 1 (D-040-MOTION-SYSTEM). MudBlazor 7.11.0 ALREADY rotates the
+   expand-panel and nav-group chevrons 180° on `.mud-transform` — but with a hardcoded
+   `0.3s cubic-bezier(0.25,0.8,0.5,1)` that predates our scale. This is NOT new motion:
+   the rotation, angle (-180°), direction, and trigger stay MudBlazor's; we only retarget
+   the TRANSITION timing onto `--motion-small` + the reversible easing, which is exactly
+   the "one token system" mandate M1 established. If Kai rules a different tempo, it is a
+   one-token change. (prefers-reduced-motion collapses via the global reduce block.) */
+.mud-expand-panel-icon,
+.mud-nav-link-expand-icon {
+    transition: transform var(--motion-small) var(--motion-ease-reversible),
+                visibility 0s;
+}
+
+/* ── M3 item 2: dialog + drawer entrance onto the token system (D-040-MOTION-SYSTEM /
+   D-040-M3-RULINGS, Kai) ──
+   Surfaces that ARRIVE (a dialog opening, the mobile drawer sliding in) do so over
+   --motion-medium (240ms), one-way ease-standard, transform + opacity only. The dialog rises
+   a few px as it fades — the register's "arrive" for a modal moment; the scrim fades with it.
+   No layout properties animate. One-shot on open (`both` holds the settled state); the global
+   + local reduced-motion blocks collapse it to an instant appear. The drawer's own width
+   collapse tween is retargeted onto the token in 05-navigation.css (a one-token change).
+
+   DOUBLE-TRANSFORM CHECK (D-040-M3-RULINGS, Kai): MudBlazor's bundle already animates
+   `.mud-dialog` with `animation: mud-open-dialog-center .1s ... both`. This file loads AFTER
+   MudBlazor at equal specificity, so the `animation` shorthand below REPLACES MudBlazor's on the
+   same element — exactly one animation runs, so no element ever carries two transforms. The
+   overlay rule animates opacity ONLY (no transform), so it cannot double up either. */
+.mud-dialog {
+    animation: motion-dialog-in var(--motion-medium) var(--motion-ease-standard) both;
+}
+
+@keyframes motion-dialog-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.mud-overlay-dialog .mud-overlay,
+.mud-overlay.mud-overlay-scrim {
+    animation: motion-overlay-in var(--motion-medium) var(--motion-ease-standard) both;
+}
+
+@keyframes motion-overlay-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ===== CARDS ===== */
+
+.mud-paper {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-base);
+    border: 1px solid var(--gray-200);
+}
+
+.mud-paper:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+/* Card with coral accent border (use Class="mud-paper coral-card") */
+.mud-paper.coral-card {
+    border-left: 4px solid var(--coral-pink);
+}
+
+.mud-paper.coral-card:hover {
+    border-left-width: 6px;
+    box-shadow: var(--shadow-coral);
+}
+
+/* Card with reef accent border */
+.mud-paper.reef-card {
+    border-left: 4px solid var(--reef-aqua);
+}
+
+.mud-paper.reef-card:hover {
+    border-left-width: 6px;
+    box-shadow: var(--shadow-reef);
+}
+
+/* Hexagonal influence - subtle clip path on cards */
+.mud-paper.hexagonal {
+    clip-path: polygon(
+        2% 0%, 98% 0%,
+        100% 10%, 100% 90%,
+        98% 100%, 2% 100%,
+        0% 90%, 0% 10%
+    );
+}
+
+/* ===== TEXT FIELDS & INPUTS ===== */
+
+.mud-input-control {
+    font-family: var(--font-body);
+}
+
+.mud-input {
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    color: var(--navy-text);
+}
+
+.mud-input-slot {
+    border-radius: var(--radius-md);
+}
+
+/* Focus states - Reef Aqua */
+.mud-input:focus,
+.mud-input-root.mud-input-root-filled:focus-within,
+.mud-input-root.mud-input-root-outlined:focus-within {
+    border-color: var(--reef-aqua);
+}
+
+.mud-input-root.mud-input-root-filled:focus-within .mud-input-slot::before,
+.mud-input-root.mud-input-root-outlined:focus-within .mud-input-slot::before {
+    border-color: var(--reef-aqua);
+    border-width: 2px;
+}
+
+/* Input labels */
+.mud-input-label {
+    font-weight: var(--font-medium);
+    color: var(--navy-text);
+    font-size: 0.875rem;
+}
+
+.mud-input-label.mud-input-label-animated {
+    transition: all var(--transition-base);
+}
+
+/* Input helper text */
+.mud-input-helper-text {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+}
+
+/* Input error states */
+.mud-input-error .mud-input-slot::before {
+    border-color: var(--error);
+}
+
+.mud-input-error .mud-input-label {
+    color: var(--error);
+}
+
+/* ===== SELECT & AUTOCOMPLETE ===== */
+
+.mud-select {
+    border-radius: var(--radius-md);
+}
+
+.mud-select:focus {
+    border-color: var(--reef-aqua);
+}
+
+.mud-select-input {
+    font-family: var(--font-body);
+    color: var(--navy-text);
+}
+
+/* Dropdown menu */
+.mud-popover {
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-xl);
+    border: 1px solid var(--gray-200);
+}
+
+.mud-list-item {
+    border-radius: var(--radius-sm);
+    margin: 2px var(--space-xs);
+    transition: all var(--transition-fast);
+}
+
+.mud-list-item:hover {
+    background: rgba(0, 184, 212, 0.08);
+    color: var(--reef-aqua);
+}
+
+.mud-list-item.mud-selected-item {
+    background: rgba(0, 184, 212, 0.15);
+    color: var(--reef-aqua);
+    font-weight: var(--font-medium);
+}
+
+/* ===== TABLES ===== */
+
+.mud-table {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.mud-table-head {
+    background: var(--gradient-deep-sea);
+}
+
+.mud-table-head .mud-table-cell {
+    color: white;
+    font-weight: var(--font-semibold);
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: var(--tracking-wide);
+    padding: var(--space-md);
+}
+
+.mud-table-body .mud-table-row {
+    transition: all var(--transition-fast);
+}
+
+.mud-table-body .mud-table-row:hover {
+    background: rgba(0, 184, 212, 0.05);
+}
+
+.mud-table-body .mud-table-cell {
+    padding: var(--space-md);
+    color: var(--navy-text);
+    font-size: 0.9375rem;
+}
+
+/* Table pagination */
+.mud-table-pagination {
+    border-top: 2px solid var(--gray-200);
+    padding: var(--space-md);
+}
+
+.mud-table-pagination-caption {
+    font-size: 0.875rem;
+    color: var(--gray-500);
+}
+
+/* Hide pagination controls when the table has no data rows.
+   Apply the coral-table-empty class to MudDataGrid or MudTable to suppress the pager. */
+.coral-table-empty .mud-table-pagination {
+    display: none !important;
+}
+
+/* Table Currency & Numeric Columns */
+.mud-table .mud-table-cell.currency,
+.mud-table .mud-table-cell.coral-currency,
+.mud-table td.currency {
+    font-family: var(--font-mono);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+}
+
+/* Right-align header for currency columns */
+.mud-table .mud-table-head .mud-table-cell.currency,
+.mud-table .mud-table-head .mud-table-cell.text-right {
+    text-align: right;
+}
+
+/* TIN/Registration columns */
+.mud-table .mud-table-cell.tin,
+.mud-table .mud-table-cell.registration-number {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    min-width: 120px;
+    white-space: nowrap;
+}
+
+/* Numeric data columns */
+.mud-table .mud-table-cell.numeric {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Table sort icons */
+.mud-table-cell .mud-sort-icon {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.mud-table-cell.mud-table-cell-sorted .mud-sort-icon {
+    color: var(--reef-aqua-light);
+}
+
+/* ===== DIALOGS & MODALS ===== */
+
+.mud-dialog {
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-2xl);
+}
+
+.mud-dialog-title {
+    background: var(--gradient-deep-sea);
+    color: white;
+    font-family: var(--font-heading);
+    font-weight: var(--font-semibold);
+    font-size: 1.5rem;
+    padding: var(--space-lg);
+}
+
+.mud-dialog-content {
+    padding: var(--space-xl);
+    font-family: var(--font-body);
+    color: var(--navy-text);
+}
+
+.mud-dialog-actions {
+    padding: var(--space-lg) var(--space-xl);
+    border-top: 1px solid var(--gray-200);
+}
+
+/* ===== ALERTS & SNACKBARS ===== */
+
+.mud-alert {
+    border-radius: var(--radius-md);
+    font-family: var(--font-body);
+    border-left-width: 4px;
+    box-shadow: var(--shadow-md);
+}
+
+.mud-alert.mud-alert-filled-success {
+    background: var(--coral-success);
+    border-left-color: var(--success-dark);
+}
+
+.mud-alert.mud-alert-filled-info {
+    background: var(--coral-info);
+    border-left-color: var(--info-dark);
+}
+
+.mud-alert.mud-alert-filled-warning {
+    background: var(--coral-warning);
+    border-left-color: var(--warning-dark);
+}
+
+.mud-alert.mud-alert-filled-error {
+    background: var(--coral-error);
+    border-left-color: var(--error-dark);
+}
+
+.mud-snackbar {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    font-family: var(--font-body);
+}
+
+/* ===== PROGRESS BARS ===== */
+
+.mud-progress-linear {
+    border-radius: var(--radius-full);
+    background: var(--gray-200);
+}
+
+.mud-progress-linear .mud-progress-linear-bar {
+    border-radius: var(--radius-full);
+    background: var(--gradient-reef);
+}
+
+.mud-progress-circular.mud-primary circle {
+    stroke: var(--reef-aqua);
+}
+
+/* ===== CHIPS ===== */
+
+.mud-chip {
+    border-radius: var(--radius-md);
+    font-family: var(--font-body);
+    font-weight: var(--font-medium);
+    transition: all var(--transition-fast);
+}
+
+.mud-chip.mud-chip-filled.mud-primary {
+    background: rgba(0, 184, 212, 0.15);
+    color: var(--reef-aqua);
+}
+
+.mud-chip.mud-chip-filled.mud-secondary {
+    background: rgba(255, 102, 51, 0.15);
+    color: var(--coral-pink);
+}
+
+/* ===== SWITCHES & CHECKBOXES ===== */
+
+.mud-switch .mud-switch-track {
+    border-radius: var(--radius-full);
+    background: var(--gray-300);
+}
+
+.mud-switch.mud-checked .mud-switch-track {
+    background: var(--reef-aqua);
+}
+
+.mud-switch .mud-switch-thumb {
+    background: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.mud-checkbox .mud-checkbox-input:checked ~ .mud-checkbox-icon {
+    color: var(--reef-aqua);
+}
+
+/* ===== TABS ===== */
+
+.mud-tabs .mud-tabs-toolbar {
+    background: transparent;
+    border-bottom: 2px solid var(--gray-200);
+}
+
+.mud-tab {
+    font-family: var(--font-heading);
+    font-weight: var(--font-medium);
+    text-transform: none;
+    color: var(--gray-500);
+    transition: all var(--transition-base);
+}
+
+.mud-tab:hover {
+    color: var(--reef-aqua);
+}
+
+.mud-tab.mud-tab-active {
+    color: var(--coral-pink);
+    font-weight: var(--font-semibold);
+}
+
+.mud-tabs .mud-tabs-slider {
+    background: var(--gradient-coral);
+    height: 3px;
+    border-radius: var(--radius-full);
+}
+
+/* ===== TOOLTIPS ===== */
+
+.mud-tooltip {
+    background: var(--navy-blue);
+    color: white;
+    border-radius: var(--radius-md);
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    padding: var(--space-sm) var(--space-md);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ===== NAVIGATION DRAWER ===== */
+
+.mud-drawer {
+    box-shadow: var(--shadow-deep-sea);
+}
+
+.mud-drawer-header {
+    background: var(--gradient-deep-sea);
+    color: white;
+    padding: var(--space-lg);
+    font-family: var(--font-heading);
+}
+
+.mud-drawer .mud-nav-link {
+    border-radius: var(--radius-md);
+    margin: var(--space-xs) var(--space-md);
+    transition: all var(--transition-fast);
+    color: var(--navy-text);
+}
+
+.mud-drawer .mud-nav-link:hover {
+    background: rgba(0, 184, 212, 0.08);
+    color: var(--reef-aqua);
+}
+
+.mud-drawer .mud-nav-link.mud-selected {
+    background: var(--gradient-reef);
+    color: white;
+    font-weight: var(--font-semibold);
+}
+
+/* ===== MAIN CONTENT AREA ===== */
+
+/* Provide balanced horizontal breathing room between the sidebar edge and page content.
+   MudBlazor uses margin-left (not padding-left) for drawer offset, so adding padding
+   here is safe and does not conflict with drawer positioning. */
+.mud-main-content {
+    padding-left: var(--space-xl, 32px);
+    padding-right: var(--space-xl, 32px);
+}
+
+/* ===== APP BAR ===== */
+
+.mud-appbar {
+    background: var(--gradient-deep-sea);
+    box-shadow: var(--shadow-md);
+}
+
+.mud-appbar .mud-toolbar-gutters {
+    padding: var(--space-sm) var(--space-lg);
+}
+
+/* ===== BADGES ===== */
+
+.mud-badge {
+    font-family: var(--font-body);
+    font-weight: var(--font-semibold);
+    font-size: 0.75rem;
+}
+
+.mud-badge.mud-badge-dot {
+    min-width: 8px;
+    min-height: 8px;
+    border-radius: var(--radius-full);
+}
+
+.mud-badge.mud-primary .mud-badge-content {
+    background: var(--coral-pink);
+}
+
+.mud-badge.mud-secondary .mud-badge-content {
+    background: var(--reef-aqua);
+}
+
+/* ===== DIVIDERS ===== */
+
+.mud-divider {
+    border-color: var(--gray-200);
+}
+
+/* ===== EXPANSION PANELS ===== */
+
+.mud-expand-panel {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-200);
+    margin-bottom: var(--space-md);
+    transition: all var(--transition-base);
+}
+
+.mud-expand-panel:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.mud-expand-panel-header {
+    font-family: var(--font-heading);
+    font-weight: var(--font-semibold);
+    color: var(--navy-text);
+}
+
+.mud-expand-panel-content {
+    color: var(--navy-text);
+    font-family: var(--font-body);
+}
+
+/* ===== RATING ===== */
+
+.mud-rating-item .mud-rating-item-icon {
+    color: var(--warning);
+}
+
+/* ===== PAGINATION ===== */
+
+.mud-pagination .mud-pagination-item {
+    border-radius: var(--radius-md);
+    margin: 0 var(--space-xs);
+    transition: all var(--transition-fast);
+}
+
+.mud-pagination .mud-pagination-item:hover {
+    background: rgba(0, 184, 212, 0.08);
+    color: var(--reef-aqua);
+}
+
+.mud-pagination .mud-pagination-item.mud-selected {
+    background: var(--gradient-coral);
+    color: white;
+    font-weight: var(--font-semibold);
+}
+
+/* ===== TIMELINE ===== */
+
+.mud-timeline-item-dot {
+    background: var(--reef-aqua);
+    border-color: var(--reef-aqua-light);
+}
+
+.mud-timeline-item-dot.mud-timeline-item-filled {
+    background: var(--gradient-reef);
+}
+
+/* ===== FILE UPLOAD ===== */
+
+.mud-file-upload {
+    border: 2px dashed var(--gray-300);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-base);
+}
+
+.mud-file-upload:hover {
+    border-color: var(--reef-aqua);
+    background: rgba(0, 184, 212, 0.05);
+}
+
+.mud-file-upload.mud-drag-over {
+    border-color: var(--coral-pink);
+    background: rgba(255, 102, 51, 0.05);
+    border-style: solid;
+}
+
+/* ===== ACCESSIBILITY OVERRIDES ===== */
+
+/* Focus visible states - Reef Aqua outline */
+.mud-button-root:focus-visible,
+.mud-input:focus-visible,
+.mud-select:focus-visible,
+.mud-nav-link:focus-visible {
+    outline: 2px solid var(--reef-aqua);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba(0, 184, 212, 0.15);
+}
+
+/* Required field indicator - Coral asterisk */
+.mud-input-label-required::after {
+    color: var(--coral-primary) !important; /* var(--coral-primary) Coral */
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .mud-button-filled.mud-primary,
+    .mud-button-filled-primary {
+        background: var(--coral-accent);
+        border: 2px solid var(--navy-blue);
+    }
+
+    .mud-input:focus,
+    .mud-select:focus {
+        border-width: 3px;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .mud-button-root,
+    .mud-paper,
+    .mud-input,
+    .mud-list-item,
+    .mud-tab,
+    .mud-nav-link {
+        transition: none;
+    }
+
+    /* CLC-DES-040 motion-system rule: reduced-motion collapses every responsive animation to its
+       end state. The M2 draw-in / cross-fade classes show their resolved appearance instantly.
+       (The review-queue completion also gates on reduced-motion in C#, so these classes are
+       usually never even applied — this is the CSS-level guarantee for any other entry point.) */
+    .drawn-check__path,
+    .dashed-ring__solid,
+    .resolve-crossfade,
+    .mud-dialog,
+    .mud-overlay-dialog .mud-overlay,
+    .mud-overlay.mud-overlay-scrim,
+    .coral-chip-crossfade {
+        animation: none;
+    }
+    .drawn-check__path,
+    .dashed-ring__solid {
+        stroke-dashoffset: 0;
+    }
+    .resolve-crossfade,
+    .mud-dialog,
+    .coral-chip-crossfade,
+    .coral-saved-indicator__label {
+        opacity: 1;
+        transform: none;
+    }
+    .coral-saved-indicator__label {
+        animation: none;
+    }
+}
+
+/* ===== PRINT OVERRIDES ===== */
+@media print {
+    .mud-paper {
+        box-shadow: none;
+        border: 1px solid var(--gray-300);
+    }
+
+    .mud-appbar,
+    .mud-drawer {
+        display: none;
+    }
+}
+
+/* ===================================================================
+   Phase 4: Component Polish - Design System Compliance
+   Purpose: Unified card styling, icon sizing, focus states, hover states
+   =================================================================== */
+
+/* ===== UNIFIED CARD STYLING ===== */
+
+/* Base card - unified light style */
+.coral-card,
+.mud-card {
+    background: var(--coral-bg-secondary, #FFFFFF);
+    border: none;
+    border-radius: var(--radius-xl, 16px);
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow var(--duration-fast, 150ms) ease,
+                transform var(--duration-fast, 150ms) ease;
+}
+
+/* Card variants */
+.coral-card--elevated {
+    box-shadow: var(--shadow-md);
+}
+
+.coral-card--flat {
+    box-shadow: none;
+    border: 1px solid var(--coral-gray-200, #E5E7EB);
+}
+
+/* Card sections */
+.coral-card__header {
+    padding: var(--space-4, 1rem) var(--space-6, 1.5rem);
+    border-bottom: 1px solid var(--coral-gray-200, #E5E7EB);
+}
+
+.coral-card__body {
+    padding: var(--space-6, 1.5rem);
+}
+
+.coral-card__footer {
+    padding: var(--space-4, 1rem) var(--space-6, 1.5rem);
+    border-top: 1px solid var(--coral-gray-200, #E5E7EB);
+    background: var(--coral-gray-50, #F8F9FA);
+    border-radius: 0 0 var(--radius-xl, 16px) var(--radius-xl, 16px);
+}
+
+/* KPI Card - Light style */
+.coral-kpi-card {
+    background: var(--coral-bg-secondary, #FFFFFF);
+    border-radius: var(--radius-xl, 16px);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-6, 1.5rem);
+    transition: all var(--duration-fast, 150ms) ease;
+}
+
+.coral-kpi-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-4px);
+}
+
+.coral-kpi-card__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-lg, 12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-4, 1rem);
+}
+
+/* Icon color variants */
+.coral-kpi-card__icon--success {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--coral-success, #10B981);
+}
+
+.coral-kpi-card__icon--info {
+    background: rgba(0, 184, 212, 0.15);
+    color: var(--coral-accent-primary, #00B8D4);
+}
+
+.coral-kpi-card__icon--warning {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--coral-warning, #F59E0B);
+}
+
+.coral-kpi-card__icon--error {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--coral-error, #EF4444);
+}
+
+.coral-kpi-card__value {
+    font-family: var(--font-display, 'Poppins', sans-serif);
+    font-size: var(--text-3xl, 1.875rem);
+    font-weight: 700;
+    color: var(--coral-text-primary, #1A1A2E);
+    margin-bottom: var(--space-1, 0.25rem);
+}
+
+.coral-kpi-card__label {
+    font-size: var(--text-xs, 0.75rem);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--coral-text-secondary, #6C757D);
+}
+
+/* ===== ICON SIZING UTILITIES ===== */
+
+.icon-xs { font-size: 14px !important; width: 14px; height: 14px; }
+.icon-sm { font-size: 18px !important; width: 18px; height: 18px; }
+.icon-md { font-size: 20px !important; width: 20px; height: 20px; }
+.icon-lg { font-size: 24px !important; width: 24px; height: 24px; }
+.icon-xl { font-size: 32px !important; width: 32px; height: 32px; }
+.icon-2xl { font-size: 48px !important; width: 48px; height: 48px; }
+
+/* MudBlazor icon sizing overrides */
+.mud-nav-link .mud-icon-root {
+    font-size: 20px;
+}
+
+.mud-button .mud-icon-root {
+    font-size: 18px;
+}
+
+.mud-table .mud-icon-button .mud-icon-root {
+    font-size: 18px;
+}
+
+/* ===== ENHANCED FOCUS STATES (Accessibility) ===== */
+
+/* Global focus-visible styles for common interactive elements */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+    outline: 2px solid var(--coral-accent-primary, #00B8D4);
+    outline-offset: 2px;
+}
+
+/* Buttons */
+.mud-button:focus-visible,
+.coral-btn:focus-visible {
+    outline: 2px solid var(--coral-accent-primary, #00B8D4);
+    outline-offset: 2px;
+    box-shadow: var(--shadow-focus, 0 0 0 3px rgba(0, 184, 212, 0.2));
+}
+
+/* Inputs */
+.mud-input-control:focus-within .mud-input-slot {
+    border-color: var(--coral-accent-primary, #00B8D4) !important;
+    box-shadow: var(--shadow-focus, 0 0 0 3px rgba(0, 184, 212, 0.2));
+}
+
+/* Links */
+a:focus-visible {
+    outline: 2px solid var(--coral-accent-primary, #00B8D4);
+    outline-offset: 2px;
+}
+
+/* Cards (if clickable) */
+.coral-card[tabindex]:focus-visible,
+.mud-card[tabindex]:focus-visible {
+    outline: 2px solid var(--coral-accent-primary, #00B8D4);
+    outline-offset: 2px;
+}
+
+/* Navigation items */
+.mud-nav-link:focus-visible {
+    outline: 2px solid var(--coral-accent-primary, #00B8D4);
+    outline-offset: -2px;
+}
+
+/* ===== ENHANCED HOVER STATES ===== */
+
+/* Buttons */
+.mud-button:hover:not(:disabled):not(.mud-button-loading),
+.coral-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+/* Cards (if interactive) */
+.coral-card--interactive:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
+}
+
+/* Table rows */
+.mud-table-body .mud-table-row:hover:not(.mud-table-row-selected) {
+    background-color: rgba(0, 184, 212, 0.08);
+}
+
+/* Icon buttons */
+.mud-icon-button:hover {
+    background-color: rgba(0, 184, 212, 0.1);
+}
+
+/* Navigation items */
+.mud-nav-link:hover:not(.active):not(.mud-nav-link-active) {
+    background-color: var(--coral-secondary-light, rgba(30, 58, 95, 0.1));
+}
+
+/* ===== CHIP/TAG STYLING ===== */
+
+.mud-chip {
+    border-radius: var(--radius-sm, 4px) !important;
+    font-size: var(--text-xs, 0.75rem) !important;
+    font-weight: 600;
+}
+
+.mud-chip.mud-chip-color-primary {
+    background-color: rgba(0, 184, 212, 0.15) !important;
+    color: var(--coral-accent-primary, #00B8D4) !important;
+}
+
+.mud-chip.mud-chip-color-success {
+    background-color: rgba(16, 185, 129, 0.15) !important;
+    color: var(--coral-success, #10B981) !important;
+}
+
+.mud-chip.mud-chip-color-warning {
+    background-color: rgba(245, 158, 11, 0.15) !important;
+    color: var(--coral-warning, #F59E0B) !important;
+}
+
+.mud-chip.mud-chip-color-error {
+    background-color: rgba(239, 68, 68, 0.15) !important;
+    color: var(--coral-error, #EF4444) !important;
+}
+
+/* ===== PROGRESS INDICATORS ===== */
+
+.mud-progress-linear {
+    background-color: var(--coral-gray-200, #E5E7EB) !important;
+}
+
+.mud-progress-linear .mud-progress-linear-bar {
+    background-color: var(--coral-accent-primary, #00B8D4) !important;
+}
+
+.mud-progress-circular circle {
+    stroke: var(--coral-accent-primary, #00B8D4) !important;
+}
+
+.mud-progress-circular-svg-circle-background {
+    stroke: var(--coral-gray-200, #E5E7EB) !important;
+}
+
+/* ===== TOOLTIP STYLING ===== */
+
+.mud-tooltip {
+    background-color: var(--coral-secondary, #1E3A5F) !important;
+    color: var(--coral-text-inverse, #FFFFFF) !important;
+    border-radius: var(--radius-md, 8px) !important;
+    font-size: var(--text-sm, 0.875rem) !important;
+    padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem) !important;
+    box-shadow: var(--shadow-lg) !important;
+}
+
+.mud-tooltip-arrow::before {
+    background-color: var(--coral-secondary, #1E3A5F) !important;
+}
+
+/* ===== AVATAR STYLING ===== */
+
+.mud-avatar {
+    border-radius: var(--radius-full, 9999px) !important;
+    font-family: var(--font-body-ds, 'Inter', sans-serif) !important;
+    font-weight: 600 !important;
+}
+
+.mud-avatar.mud-avatar-color-primary {
+    background-color: var(--coral-secondary, #1E3A5F) !important;
+    color: var(--coral-text-inverse, #FFFFFF) !important;
+}
+
+/* ===== PAGINATION STYLING ===== */
+
+.mud-pagination-item {
+    border-radius: var(--radius-lg, 12px) !important;
+}
+
+.mud-pagination-item.mud-pagination-item-selected {
+    background-color: var(--coral-accent-primary, #00B8D4) !important;
+    color: var(--coral-text-inverse, #FFFFFF) !important;
+}
+
+.mud-pagination-item:hover:not(.mud-pagination-item-selected) {
+    background-color: rgba(0, 184, 212, 0.1) !important;
+}
+
+/* ===== SCROLLBAR STYLING ===== */
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--coral-bg-tertiary, #E9ECEF);
+    border-radius: var(--radius-full, 9999px);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--coral-gray-400, #9CA3AF);
+    border-radius: var(--radius-full, 9999px);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--coral-gray-500, #6C757D);
+}
+
+/* Firefox scrollbar */
+body,
+.scrollable-container {
+    scrollbar-width: thin;
+    scrollbar-color: var(--coral-gray-400, #9CA3AF) var(--coral-bg-tertiary, #E9ECEF);
+}
+
+/* ===== SELECTION/HIGHLIGHT COLOR ===== */
+
+::selection {
+    background-color: rgba(0, 184, 212, 0.3);
+    color: var(--coral-text-primary, #1A1A2E);
+}
+
+::-moz-selection {
+    background-color: rgba(0, 184, 212, 0.3);
+    color: var(--coral-text-primary, #1A1A2E);
+}
+
+/* ===== PLACEHOLDER TEXT ===== */
+
+::placeholder {
+    color: var(--coral-text-muted, #6C757D);
+    opacity: 1;
+}
+
+::-webkit-input-placeholder {
+    color: var(--coral-text-muted, #6C757D);
+}
+
+::-moz-placeholder {
+    color: var(--coral-text-muted, #6C757D);
+    opacity: 1;
+}
+
+:-ms-input-placeholder {
+    color: var(--coral-text-muted, #6C757D);
+}
+
+/* ===== DIALOG/MODAL BACKDROP ===== */
+
+.mud-overlay {
+    /* rgba(26, 26, 46, 0.5) = --coral-text-primary (#1A1A2E) at 50% opacity */
+    background-color: rgba(26, 26, 46, 0.5) !important;
+}
+
+/* When the Generate VAT Return dialog is open, stale non-dialog MudOverlay portals
+   (left behind after MudSelect focus churn) must not absorb button clicks.
+   Keep the dialog backdrop (.mud-overlay-dialog) interactive. */
+html body:has(.mud-dialog.create-vat-return-dialog):not(:has(.mud-popover-open))
+    .mud-overlay:not(.mud-overlay-dialog) {
+    pointer-events: none !important;
+}
+
+/* Reconnect modal: hide completely when in 'components-reconnect-hide' state.
+   PR #3041 added the standard Blazor reconnect-modal markup to App.razor.
+   blazor-reconnection.js then injects 'position: fixed; top:0; left:0;
+   right:0; bottom:0; z-index:10000; display:flex' for the modal container
+   — which means in its DEFAULT hidden state, the full-screen overlay is
+   STILL rendered and intercepts ALL pointer events on every page, breaking
+   every click in the app (smoke #65 caught this with
+   '<div id="components-reconnect-modal" class="components-reconnect-hide">
+    intercepts pointer events' in the Playwright call log).
+   The custom JS toggles between '-hide' and '-show/-failed/-rejected' but
+   doesn't add a CSS hiding rule for the hide state.  This rule does that.
+   When the class switches to '-show', display:flex from the injected JS
+   CSS takes over (CSS specificity / order). */
+#components-reconnect-modal.components-reconnect-hide {
+    display: none !important;
+}
+
+/* ===== TABLE SORT INDICATORS ===== */
+
+.mud-table-cell .mud-sort-icon {
+    color: var(--coral-text-muted, #6C757D) !important;
+}
+
+.mud-table-cell.mud-table-cell-sorted .mud-sort-icon {
+    color: var(--coral-accent-primary, #00B8D4) !important;
+}
+
+/* ===== TABS STYLING ===== */
+
+.mud-tabs {
+    border-bottom: 1px solid var(--coral-gray-200, #E5E7EB);
+}
+
+.mud-tab {
+    color: var(--coral-text-secondary, #6C757D) !important;
+    font-weight: 500;
+}
+
+.mud-tab:hover {
+    color: var(--coral-text-primary, #1A1A2E) !important;
+    background-color: transparent !important;
+}
+
+.mud-tab.mud-tab-active {
+    color: var(--coral-accent-primary, #00B8D4) !important;
+}
+
+.mud-tabs-indicator {
+    background-color: var(--coral-accent-primary, #00B8D4) !important;
+}
+
+/* ===== PASSWORD FIELDS ===== */
+
+/* Hide native browser password reveal toggle (Chromium/Edge) */
+input::-ms-reveal,
+input::-ms-clear {
+    display: none;
+}
+
+/* ===== RESPONSIVE DATA TABLES =====
+   Systemic fix for column truncation across all MudDataGrid/MudTable instances.
+   Apply col-hide-below-xl / col-hide-below-lg via HeaderClass + CellClass on columns.
+
+   Breakpoints (from design reference):
+     >=1280px  : All columns visible
+     1024-1279 : col-hide-below-xl columns hidden
+     768-1023  : col-hide-below-lg columns hidden
+     <768px    : col-hide-below-md columns hidden
+   ================================================================== */
+
+/* Ensure all MudDataGrid table containers support horizontal scrolling */
+.mud-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Fix: Empty-state row — .mud-table-cell sets text-align: start which overrides
+   the row-level text-align: center. Force centering and allow content to escape
+   the overflow-x: auto clipping context of the scroll container. */
+.mud-table-empty-row td.mud-table-cell {
+    text-align: center;
+    overflow: visible;
+}
+
+/* Transactions page: the CoralEmptyState is rendered outside the scrollable
+   table container (so it is always centered within the page). Suppress the
+   data-grid's own empty row to avoid a duplicate / invisible row artefact. */
+.transactions-data-grid .mud-table-empty-row {
+    display: none;
+}
+
+/* Prevent header text from wrapping (avoids truncated column labels) */
+.mud-table-head .mud-table-cell {
+    white-space: nowrap;
+}
+
+/* Sticky-right column: ensure solid background so scrolling content doesn't bleed through */
+.mud-table-cell-sticky-right {
+    background-color: inherit;
+}
+
+.mud-table-head .mud-table-cell-sticky-right {
+    background-color: var(--deep-sea);
+}
+
+/* Responsive column visibility utilities — apply to HeaderClass AND CellClass */
+@media (max-width: 1279px) {
+    .col-hide-below-xl { display: none !important; }
+}
+
+@media (max-width: 1023px) {
+    .col-hide-below-lg { display: none !important; }
+}
+
+@media (max-width: 767px) {
+    .col-hide-below-md { display: none !important; }
+}

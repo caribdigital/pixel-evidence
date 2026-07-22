@@ -1,0 +1,654 @@
+/**
+ * 05-navigation.css
+ * Reef Current Navigation - Week 2, Phase 2.1
+ *
+ * Transforms static MudDrawer navigation into living reef experience:
+ * - Deep sea gradient with flowing current animation
+ * - Coral pink accent bars for active states
+ * - Pulsing coral nodes
+ * - Hover effects with reef current movement
+ */
+
+/* ==========================================================================
+   DRAWER CONTAINER - Deep Sea Foundation
+   ========================================================================== */
+
+.mud-drawer {
+    background: linear-gradient(180deg,
+                var(--deep-sea) 0%,
+                var(--deep-sea-dark, #00263D) 100%);
+    position: relative;
+    overflow: hidden;
+    /* CLC-DES-040 M3 item 2: the drawer collapse/expand width tween retargeted off the
+       off-token 0.3s onto --motion-medium (240ms) + the reversible easing (it opens both
+       ways). Same "one token system" retarget the M2 chevron used; not new motion. */
+    transition: width var(--motion-medium) var(--motion-ease-reversible);
+}
+
+/* Flowing Current Background Pattern */
+.mud-drawer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%;
+    right: -50%;
+    bottom: 0;
+    background-image:
+        linear-gradient(90deg, transparent 0%, rgba(0, 184, 212, 0.03) 50%, transparent 100%),
+        linear-gradient(0deg, transparent 0%, rgba(0, 184, 212, 0.02) 50%, transparent 100%);
+    background-size: 200% 100%, 100% 200%;
+    animation: reef-current-flow 30s linear infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+@keyframes reef-current-flow {
+    0% {
+        transform: translateX(0) translateY(0);
+    }
+    100% {
+        transform: translateX(50%) translateY(-10%);
+    }
+}
+
+/* Drawer Header Styling - Already has dark background */
+.mud-drawer-header {
+    position: relative;
+    z-index: 1;
+    border-bottom: 1px solid rgba(0, 184, 212, 0.1);
+}
+
+
+/* ==========================================================================
+   SIDEBAR CONTENT LAYOUT
+   Flex column: scrollable nav area + pinned user profile at bottom.
+   Without this the nav items overflow the drawer height and SETTINGS /
+   SUPPORT sections become unreachable on pages with long nav lists.
+   ========================================================================== */
+
+/* Ensure the MudBlazor drawer content uses a flex column layout */
+.mud-drawer .mud-drawer-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Wrapper that fills the remaining drawer height below the logo header */
+.coral-nav-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;       /* required for flex children to respect overflow */
+    overflow: hidden;
+}
+
+/* The MudNavMenu (all sections) scrolls within the available space */
+.coral-nav-content .mud-navmenu {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+}
+
+/* User profile section stays pinned to the bottom of the sidebar */
+.coral-nav-user {
+    flex-shrink: 0;
+    border-top: 1px solid rgba(0, 184, 212, 0.15);
+    padding: 4px 0;
+    position: relative;
+    z-index: 1;
+}
+
+
+/* ==========================================================================
+   NAVIGATION MENU - Reef Structure
+   ========================================================================== */
+
+.mud-navmenu {
+    position: relative;
+    z-index: 1;
+    padding: var(--spacing-md, 16px) 0;
+}
+
+/* Navigation Links - Coral Polyps */
+.mud-nav-link {
+    position: relative;
+    color: rgba(255, 255, 255, 0.85) !important;
+    border-left: 4px solid transparent;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin: var(--spacing-xs, 4px) var(--spacing-sm, 8px);
+    border-radius: 0 8px 8px 0;
+}
+
+/* Ensure nav link text is always visible */
+.mud-nav-link .mud-nav-link-text {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Nav link icons */
+.mud-nav-link .mud-icon-root {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Coral Node Indicator (hidden by default) */
+.mud-nav-link::after {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 50%;
+    width: 0;
+    height: 0;
+    background: var(--reef-aqua);
+    border-radius: 50%;
+    transform: translateY(-50%);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 0 rgba(255, 102, 51, 0);
+}
+
+/* Hover State - Current Movement */
+.mud-nav-link:hover {
+    background: rgba(0, 184, 212, 0.08);
+    border-left-color: rgba(0, 184, 212, 0.3);
+    color: rgba(255, 255, 255, 0.95);
+    transform: translateX(4px);
+}
+
+.mud-nav-link:hover::after {
+    width: 6px;
+    height: 6px;
+    background: var(--reef-aqua);
+    box-shadow: 0 0 12px rgba(0, 184, 212, 0.4);
+}
+
+/* Active State - Reef Aqua Highlight */
+.mud-nav-link.active,
+.mud-nav-link.mud-nav-link-active {
+    background: rgba(0, 184, 212, 0.1);
+    border-left-color: var(--reef-aqua);
+    color: white;
+    font-weight: 600;
+}
+
+.mud-nav-link.active::after,
+.mud-nav-link.mud-nav-link-active::after {
+    width: 8px;
+    height: 8px;
+    background: var(--reef-aqua);
+    box-shadow: 0 0 20px rgba(0, 184, 212, 0.6);
+    /* CLC-DES-040 M2 (Kai ruling, folded into the items 1-2 batch): the active dot's
+       infinite pulse is replaced by a ONE-SHOT ignite — motion answers the activation,
+       then rests, which is the register's whole sentence. Keyframe renamed off the
+       "coral-" namespace (which read like a color tell; it also collided with three other
+       @keyframes coral-pulse — the rest are M4's to retire). --motion-small, ease-standard,
+       `both` holds the settled state; prefers-reduced-motion collapses via the global block. */
+    animation: nav-dot-ignite var(--motion-small) var(--motion-ease-standard) both;
+}
+
+@keyframes nav-dot-ignite {
+    from {
+        transform: translateY(-50%) scale(0.6);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(-50%) scale(1);
+        opacity: 1;
+    }
+}
+
+/* CLC-DES-040 M3 item 1 (D-040-MOTION-SYSTEM / D-040-M3-RULINGS, Kai): one-time nav ENTRANCE.
+   A subtle fade-up cascade across the top-level nav items as the shell first paints — the
+   register's "arrive, then rest" sentence for the sidebar. Pure CSS keyed to element mount,
+   so it plays once per circuit and NEVER on a data refresh or same-context re-render (Blazor
+   diffs the persistent MudNavMenu rather than recreating it; only genuinely new sections that
+   appear after a context switch will fade in, which is a real appearance, not a refresh).
+   Transform + opacity only.
+
+   TIMING (ratified, D-040-M3-RULINGS, Kai — the #4062 spec text is amended in writing here, not
+   silently): per-item duration = --motion-medium (240ms), stagger step 20ms, cap at 8 items
+   (items 9+ share the 8th's delay and arrive together). Each individual animation stays under
+   the 300ms register cap; the whole cascade tail is bounded — the last item starts at 140ms and
+   ends at 380ms, under the ratified 400ms sequence-tail hard ceiling. (A ~100ms per-item entrance
+   read as flicker; the 240ms cascade reads as grace — Kai's ratification of Anya's reading.)
+   Collapses under the nav reduced-motion block below. */
+.coral-nav-content .mud-navmenu > * {
+    animation: coral-nav-entrance var(--motion-medium) var(--motion-ease-standard) both;
+}
+.coral-nav-content .mud-navmenu > *:nth-child(1) { animation-delay: 0ms; }
+.coral-nav-content .mud-navmenu > *:nth-child(2) { animation-delay: 20ms; }
+.coral-nav-content .mud-navmenu > *:nth-child(3) { animation-delay: 40ms; }
+.coral-nav-content .mud-navmenu > *:nth-child(4) { animation-delay: 60ms; }
+.coral-nav-content .mud-navmenu > *:nth-child(5) { animation-delay: 80ms; }
+.coral-nav-content .mud-navmenu > *:nth-child(6) { animation-delay: 100ms; }
+.coral-nav-content .mud-navmenu > *:nth-child(7) { animation-delay: 120ms; }
+.coral-nav-content .mud-navmenu > *:nth-child(n+8) { animation-delay: 140ms; }
+
+@keyframes coral-nav-entrance {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Link Icons — CLC-DES-040 M2 item 2 (D-040-MOTION-SYSTEM, Kai): nav-active fill.
+   Ruled: inactive icons rest at 0.72 opacity in the sidebar ink; activation cross-fades
+   to full opacity in Reef Aqua alongside the existing active background, 180ms ease-out.
+   No icon swap, no scale, no bounce — the "fill" reads as ignition, not substitution.
+   (Replaces the prior scale(1.1) rotate(5deg) hover + scale(1.05) active, which Kai's
+   "settle by color and opacity, no scale, no bounce" ruling supersedes.) The active color
+   carries !important only to beat the base !important ink at line 128, per this file's
+   convention. prefers-reduced-motion collapses via the global reduce block. */
+.mud-nav-link .mud-icon-root {
+    color: inherit;
+    opacity: 0.72;
+    transition: color var(--motion-small) var(--motion-ease-standard),
+                opacity var(--motion-small) var(--motion-ease-standard);
+}
+
+.mud-nav-link:hover .mud-icon-root {
+    opacity: 1;
+}
+
+.mud-nav-link.active .mud-icon-root,
+.mud-nav-link.mud-nav-link-active .mud-icon-root {
+    color: var(--reef-aqua) !important;
+    opacity: 1;
+}
+
+
+/* ==========================================================================
+   NAVIGATION BADGES - Notification Counts
+   ========================================================================== */
+
+.coral-nav-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: var(--radius-full, 9999px);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    color: white;
+    margin-left: auto;
+}
+
+.coral-nav-badge--info {
+    background: var(--info, #0891B2);
+}
+
+.coral-nav-badge--warning {
+    background: var(--warning, #F59E0B);
+}
+
+.coral-nav-badge--urgent {
+    background: var(--error, #DC2626);
+    animation: badge-pulse 2s ease-in-out infinite;
+}
+
+@keyframes badge-pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(220, 38, 38, 0);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 8px rgba(220, 38, 38, 0.5);
+    }
+}
+
+/* Badge positioning inside nav links */
+.mud-nav-link .coral-nav-badge {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+
+
+/* ==========================================================================
+   NAVIGATION SECTION HEADERS - Category Labels
+   ========================================================================== */
+
+.coral-nav-section {
+    padding: var(--spacing-md, 16px) var(--spacing-md, 16px) var(--spacing-xs, 4px);
+    margin-top: var(--spacing-sm, 8px);
+}
+
+.coral-nav-section:first-child {
+    margin-top: 0;
+}
+
+.coral-nav-section-text {
+    display: block;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.0625em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6) !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+
+
+/* ==========================================================================
+   NAVIGATION GROUP - Reef Sections
+   ========================================================================== */
+
+.mud-nav-group {
+    margin: var(--spacing-sm, 8px) 0;
+}
+
+/* Group Header */
+.mud-nav-group > .mud-nav-link {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    border-left: none;
+}
+
+.mud-nav-group > .mud-nav-link:hover {
+    background: rgba(0, 184, 212, 0.06);
+    transform: none;
+}
+
+/* Group Expand Icon */
+/* CLC-DES-040 M2 item 1: the nav-group chevron already rotates 180° on .mud-expanded;
+   this rule (2 classes, loaded after 03-mudblazor-overrides) is what actually governs it,
+   so its timing is tokenized HERE onto --motion-small + the reversible easing. Rotation,
+   angle, and trigger unchanged — token-system consistency only (D-040-MOTION-SYSTEM). */
+.mud-nav-group .mud-expand-panel-icon {
+    color: var(--reef-aqua);
+    transition: transform var(--motion-small) var(--motion-ease-reversible);
+}
+
+.mud-nav-group.mud-expanded .mud-expand-panel-icon {
+    transform: rotate(180deg);
+}
+
+/* Group Content - Nested Links */
+.mud-nav-group .mud-collapse-container {
+    padding-left: var(--spacing-md, 16px);
+    border-left: 2px solid rgba(0, 184, 212, 0.1);
+    margin-left: var(--spacing-md, 16px);
+}
+
+.mud-nav-group .mud-collapse-container .mud-nav-link {
+    font-size: 0.875rem;
+    padding-left: var(--spacing-sm, 8px);
+}
+
+
+
+
+/* ==========================================================================
+   DRAWER OVERLAY - Depth Effect
+   ========================================================================== */
+
+.mud-drawer-overlay {
+    background: rgba(0, 51, 102, 0.4);
+    backdrop-filter: blur(4px);
+}
+
+
+/* ==========================================================================
+   ACCESSIBILITY & RESPONSIVE
+   ========================================================================== */
+
+/* Focus States */
+.mud-nav-link:focus-visible {
+    outline: 2px solid var(--reef-aqua);
+    outline-offset: 2px;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    .mud-drawer,
+    .mud-nav-link,
+    .mud-nav-link::after,
+    .mud-nav-link .mud-icon-root {
+        animation: none;
+        transition: none;
+    }
+
+    .mud-drawer::before {
+        animation: none;
+    }
+
+    /* M3 item 1: nav entrance collapses to the settled state (no fade-up). */
+    .coral-nav-content .mud-navmenu > * {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+    .mud-drawer {
+        width: 280px;
+    }
+
+    .mud-nav-link {
+        font-size: 0.9375rem;
+        padding: 12px 16px;
+    }
+}
+
+
+/* ==========================================================================
+   BUSINESS SWITCHER INTEGRATION
+   ========================================================================== */
+
+/* Ensure Business Switcher in app bar complements navigation */
+.mud-appbar .business-switcher-container {
+    border-left: 1px solid rgba(0, 184, 212, 0.2);
+    padding-left: var(--spacing-md, 16px);
+    margin-left: var(--spacing-md, 16px);
+}
+
+
+/* ==========================================================================
+   DARK MODE SUPPORT
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    /* Navigation already dark by default - no changes needed */
+}
+
+
+/* ==========================================================================
+   HIGH CONTRAST MODE
+   ========================================================================== */
+
+@media (prefers-contrast: high) {
+    .mud-nav-link {
+        border-left-width: 3px;
+    }
+
+    .mud-nav-link.active,
+    .mud-nav-link.mud-nav-link-active {
+        border-left-width: 5px;
+        background: rgba(0, 184, 212, 0.2);
+    }
+
+    .mud-drawer::before {
+        opacity: 0;
+    }
+}
+
+
+/* ==========================================================================
+   SKIP NAVIGATION LINK - Accessibility
+   ========================================================================== */
+
+.skip-nav-link {
+    position: absolute;
+    top: -100px;
+    left: 16px;
+    z-index: 9999;
+    padding: 12px 24px;
+    background: var(--deep-sea, #1E3A5F);
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 0 0 8px 8px;
+    transition: top 0.2s ease;
+}
+
+.skip-nav-link:focus {
+    top: 0;
+    outline: 2px solid var(--reef-aqua, #00B8D4);
+    outline-offset: 2px;
+}
+
+
+/* ==========================================================================
+   ENHANCED SECTION DIVIDERS - UI/UX Phase 1.4
+   ========================================================================== */
+
+.coral-nav-section {
+    padding: var(--spacing-lg, 20px) var(--spacing-md, 16px) var(--spacing-xs, 4px);
+    margin-top: var(--spacing-lg, 20px);
+    position: relative;
+}
+
+/* Subtle divider line above section headers */
+.coral-nav-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: var(--spacing-md, 16px);
+    right: var(--spacing-md, 16px);
+    height: 1px;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(0, 184, 212, 0.15) 20%,
+        rgba(0, 184, 212, 0.25) 50%,
+        rgba(0, 184, 212, 0.15) 80%,
+        transparent 100%);
+}
+
+.coral-nav-section:first-child::before {
+    display: none;
+}
+
+.coral-nav-section-text {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.0625em;
+    text-transform: uppercase;
+    color: rgba(0, 184, 212, 0.7) !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Decorative reef node before section text */
+.coral-nav-section-text::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--reef-aqua);
+    opacity: 0.6;
+    flex-shrink: 0;
+}
+
+
+/* Ensure tooltips are readable */
+.mud-popover .mud-tooltip {
+    background: var(--deep-sea, #1E3A5F) !important;
+    color: white !important;
+    font-size: 0.875rem;
+    padding: 8px 12px;
+    border: 1px solid rgba(0, 184, 212, 0.25);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* Arrow contrast */
+.mud-tooltip-arrow::before {
+    background: var(--deep-sea, #1E3A5F) !important;
+    border-color: rgba(0, 184, 212, 0.3) !important;
+}
+
+
+/* ==========================================================================
+   ACTIVE ROUTE ENHANCED INDICATORS
+   ========================================================================== */
+
+/* Add secondary indicator for active state */
+.mud-nav-link.active,
+.mud-nav-link.mud-nav-link-active {
+    background: linear-gradient(90deg,
+        rgba(0, 184, 212, 0.15) 0%,
+        rgba(0, 184, 212, 0.05) 100%);
+    border-left-color: var(--reef-aqua);
+}
+
+/* Active state icon highlight */
+.mud-nav-link.active .mud-icon-root,
+.mud-nav-link.mud-nav-link-active .mud-icon-root {
+    color: var(--reef-aqua) !important;
+    filter: drop-shadow(0 0 4px rgba(0, 184, 212, 0.4));
+}
+
+/* Active text styling */
+.mud-nav-link.active .mud-nav-link-text,
+.mud-nav-link.mud-nav-link-active .mud-nav-link-text {
+    color: white !important;
+    font-weight: 600;
+}
+
+
+/* ==========================================================================
+   SETTINGS SUB-GROUP LABELS
+   Inline dividers inside the Settings nav group for logical grouping
+   ========================================================================== */
+
+.coral-nav-group-label {
+    padding: 12px 12px 2px;
+    margin-top: 4px;
+    position: relative;
+}
+
+.coral-nav-group-label:first-of-type {
+    margin-top: 0;
+    padding-top: 4px;
+}
+
+/* Subtle top divider (skip on first label) */
+.coral-nav-group-label + .coral-nav-group-label,
+.mud-nav-link + .coral-nav-group-label {
+    border-top: 1px solid rgba(0, 184, 212, 0.1);
+    padding-top: 10px;
+    margin-top: 6px;
+}
+
+.coral-nav-group-label-text {
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(0, 184, 212, 0.5) !important;
+    display: block;
+}
+
+/* ==========================================================================
+   PRINT STYLES
+   ========================================================================== */
+
+@media print {
+    .mud-drawer {
+        display: none;
+    }
+}

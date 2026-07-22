@@ -1,0 +1,410 @@
+diff --git a/docs/decisions/RULING_ID_MANIFEST.md b/docs/decisions/RULING_ID_MANIFEST.md
+index be105ed2..7b81782c 100644
+--- a/docs/decisions/RULING_ID_MANIFEST.md
++++ b/docs/decisions/RULING_ID_MANIFEST.md
+@@ -37,6 +37,7 @@ Format: one `` `ID` `` per bullet. The test extracts IDs from this section with
+ - `D-3950-REPORT-FOOTERS` — report footer ruling · provenance: unconfirmed
+ - `D-040-MOTION-SYSTEM` — Kai's CLC-DES-040 Reef Motion System / Responsive register ruling (2026-07-16, supervised Robbie channel): responsive motion (feedback to a user action or state change) is permitted where ambient-instrument motion stays banned; token scale `--motion-micro/small/medium` (120/180/240ms, hard cap 300ms), transform+opacity only, no figure ever animates, prefers-reduced-motion collapses everything · provenance: confirmed — spec archived verbatim `tasks/comply/KAI-HALLMARK-DES040-SPEC-2026-07-16.md`; full text on EPIC #4059. Cited by the responsive-register CSS (coral-animations.css tokens + 03-mudblazor-overrides.css).
+ - `D-040-M1-M2-RULINGS` — Kai's M1 register-audit FULL PASS + pulse-loop ruling + M4 filing + the law amendment admitting paint-only colour properties (color/background-color/border-color) to the responsive register (2026-07-20, supervised Robbie channel) · provenance: confirmed — forwarded response; appended to the D-040 record. Cited by the responsive-register CSS/components.
++- `D-040-M3-RULINGS` — Kai's M3 register audit (2026-07-21, supervised Robbie channel): nav-entrance timing ratified (per-item `--motion-medium` 240ms, 20ms stagger, cap 8, 400ms sequence-tail hard ceiling — the #4062 spec text amended in writing); chip cross-fade restraint blessed (animate genuine state transitions, never re-renders; no blanket class); dialog rise+fade over retargeting MudBlazor internals ratified with the no-double-transform check; count-up ban (CoralAnimatedNumber renders static); silent-success = primitive + three flows, receipt + A2 card keep their moments. Source audit CONDITIONAL — converts on the M3 css/diff push to the pixel-evidence channel + two stills · provenance: confirmed — forwarded response (session 2026-07-21); record `D-040-M3-RULINGS` in the Decisions DB. Cited by the M3 responsive-register CSS (05-navigation.css, 03-mudblazor-overrides.css).
+ - `D-4078-HERO-IGNITE` — Kai's landing-hero elevation values (2026-07-20): ReefField handle targets (edge 0.45, node-far 0.70, node-near 0.75, 72 nodes, 20-node pulse subset, glow 0.12 + a second bokeh 0.08) + hero-card ignite + the hard headline-contrast gate (≥3:1 over the brightest frame) + count-stays-five · provenance: confirmed — forwarded response (session 2026-07-20); issue #4078. Cited by ReefField + the landing hero-card CSS.
+ - `D-0720-ANYA-M2-4078-SPECS` — Anya's implementation-mechanism rulings for the M2 item batch + #4078 (2026-07-20): item-3 persistent-wrapper class-triggered animation (no @key), item-4/5 pathLength="1" draw-in with the var()-in-DOM / banned-in-export canon note, item-5 two-stacked-circles + cancel-safe resolving phase, and the #4078 contrast-measurement method · provenance: confirmed — forwarded response (session 2026-07-20); record `D-0720-ANYA-M2-4078-SPECS` in the Decisions DB. Cited by MainLayout (theme toggle), DrawnCheck, DashedRing.
+ - `D-3951` — CLC-DES-036 hero/marketing (Kai) · provenance: pre-cascade, confirmed standing (Kai `D-3951-ALIVE-PASS`)
+diff --git a/src/CoralComply.Web/Components/Pages/Account/NotificationPreferences.razor b/src/CoralComply.Web/Components/Pages/Account/NotificationPreferences.razor
+index a43eaf13..1dd2e8a6 100644
+--- a/src/CoralComply.Web/Components/Pages/Account/NotificationPreferences.razor
++++ b/src/CoralComply.Web/Components/Pages/Account/NotificationPreferences.razor
+@@ -217,7 +217,9 @@
+                     </div>
+ 
+                     <!-- Save Buttons -->
+-                    <div class="d-flex justify-end gap-3 mt-6">
++                    <div class="d-flex justify-end align-center gap-3 mt-6">
++                        @* CLC-DES-040 M3 item 4: silent success — inline confirmation in place of a toast. *@
++                        <SavedIndicator Visible="@_saved" />
+                         <MudButton Variant="Variant.Outlined"
+                                    Color="Color.Default"
+                                    OnClick="ResetToDefaults">
+@@ -306,6 +308,7 @@
+ @code {
+     private bool _isLoading = true;
+     private bool _isSaving = false;
++    private bool _saved = false; // CLC-DES-040 M3: inline silent-success confirmation shown after a save
+     private string? _userId;
+ 
+     // Email Notifications
+@@ -388,6 +391,7 @@
+         }
+ 
+         _isSaving = true;
++        _saved = false;
+         StateHasChanged();
+ 
+         try
+@@ -414,7 +418,7 @@
+ 
+             var saved = await NotificationPreferencesService.SavePreferencesAsync(_userId, prefs);
+             if (saved)
+-                Snackbar.Add("Notification preferences saved successfully!", Severity.Success);
++                _saved = true; // CLC-DES-040 M3 item 4: silent success — inline confirmation, not a toast.
+             else
+                 Snackbar.Add("Error saving preferences. Please try again.", Severity.Error);
+         }
+diff --git a/src/CoralComply.Web/Components/Pages/Account/ProfileSettings.razor b/src/CoralComply.Web/Components/Pages/Account/ProfileSettings.razor
+index b65050a4..22d4fabb 100644
+--- a/src/CoralComply.Web/Components/Pages/Account/ProfileSettings.razor
++++ b/src/CoralComply.Web/Components/Pages/Account/ProfileSettings.razor
+@@ -127,7 +127,9 @@
+                         </div>
+ 
+                         <!-- Save Button -->
+-                        <div class="d-flex justify-end gap-3 mt-6">
++                        <div class="d-flex justify-end align-center gap-3 mt-6">
++                            @* CLC-DES-040 M3 item 4: silent success — inline confirmation in place of a toast. *@
++                            <SavedIndicator Visible="@_saved" />
+                             <MudButton Variant="Variant.Outlined"
+                                        Color="Color.Default"
+                                        OnClick="CancelChanges">
+@@ -214,6 +216,7 @@
+ @code {
+     private bool _isLoading = true;
+     private bool _isSaving = false;
++    private bool _saved = false; // CLC-DES-040 M3: inline silent-success confirmation shown after a save
+     private ProfileModel _model = new();
+     private string _userId = "";
+     private string _userRole = "";
+@@ -289,6 +292,7 @@
+     private async Task HandleSaveProfile()
+     {
+         _isSaving = true;
++        _saved = false;
+ 
+         try
+         {
+@@ -321,7 +325,8 @@
+ 
+             await context.SaveChangesAsync();
+ 
+-            Snackbar.Add("Profile updated successfully!", Severity.Success);
++            // CLC-DES-040 M3 item 4: silent success — inline confirmation, not a toast.
++            _saved = true;
+         }
+         catch (Exception ex)
+         {
+diff --git a/src/CoralComply.Web/Components/Pages/CompanyProfile.razor b/src/CoralComply.Web/Components/Pages/CompanyProfile.razor
+index 8793c93c..d53a5079 100644
+--- a/src/CoralComply.Web/Components/Pages/CompanyProfile.razor
++++ b/src/CoralComply.Web/Components/Pages/CompanyProfile.razor
+@@ -103,13 +103,17 @@
+             </MudItem>
+         </MudGrid>
+ 
+-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4" OnClick="@SaveCompanyInfo" Disabled="@_isSaving">
+-            @if (_isSaving)
+-            {
+-                <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+-            }
+-            Save Changes
+-        </MudButton>
++        <div class="d-flex align-center gap-3 mt-4">
++            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@SaveCompanyInfo" Disabled="@_isSaving">
++                @if (_isSaving)
++                {
++                    <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
++                }
++                Save Changes
++            </MudButton>
++            @* CLC-DES-040 M3 item 4: silent success — inline confirmation in place of a toast. *@
++            <SavedIndicator Visible="@_savedCompanyInfo" />
++        </div>
+     </MudPaper>
+ 
+     <!-- 8-Point Verification System -->
+@@ -774,6 +778,7 @@
+ @code {
+     // Current business entity
+     private Business? _currentBusiness;
++    private bool _savedCompanyInfo = false; // CLC-DES-040 M3: inline silent-success confirmation for the company-info save
+     #pragma warning disable CS0414 // Field reserved for loading indicator UI
+     private bool _isLoading = true;
+     #pragma warning restore CS0414
+@@ -1011,6 +1016,7 @@
+         }
+ 
+         _isSaving = true;
++        _savedCompanyInfo = false;
+         try
+         {
+             // Update business entity with company information
+@@ -1023,7 +1029,8 @@
+             _currentBusiness.Island = _island;
+ 
+             await BusinessService.UpdateBusinessAsync(_currentBusiness);
+-            Snackbar.Add("Company information saved successfully", Severity.Success);
++            // CLC-DES-040 M3 item 4: silent success — inline confirmation, not a toast.
++            _savedCompanyInfo = true;
+         }
+         catch (Exception ex)
+         {
+diff --git a/src/CoralComply.Web/Components/Shared/QuickStatusCard.razor b/src/CoralComply.Web/Components/Shared/QuickStatusCard.razor
+index 5cb7a037..6e19cbe9 100644
+--- a/src/CoralComply.Web/Components/Shared/QuickStatusCard.razor
++++ b/src/CoralComply.Web/Components/Shared/QuickStatusCard.razor
+@@ -1,12 +1,11 @@
+ @*
+-    QuickStatusCard - Enhanced metric card with animated numbers and trends
++    QuickStatusCard - Metric card with a static figure and trend
+ 
+     Features:
+-    - Animated number counting on load
++    - Static figure (CLC-DES-040 M3: magnitude never animates — no count-up)
+     - Trend indicator with percentage change
+     - Status-themed appearance
+     - Consistent sizing across dashboard
+-    - Staggered entrance animation support
+ *@
+ 
+ <div class="quick-status-card quick-status-card--@Status.ToLower() @Class"
+@@ -38,14 +37,11 @@
+     </div>
+ 
+     <!-- Main value -->
++    <!-- CLC-DES-040 M3 item 3 (D-040-MOTION-SYSTEM, Kai): magnitude NEVER animates — no count-up
++         on any figure, anywhere. The figure renders statically; a value change updates in place
++         with no tween. (AnimateNumber is retained as a no-op for call-site compatibility.) -->
+     <div class="quick-status-card__value">
+-        <CoralAnimatedNumber
+-            Value="@Value"
+-            Format="@GetFormatString()"
+-            Prefix="@EffectivePrefix"
+-            Suffix="@EffectiveSuffix"
+-            Duration="600"
+-            AnimateOnLoad="@AnimateNumber" />
++        @EffectivePrefix@Value.ToString(GetFormatString(), System.Globalization.CultureInfo.CurrentCulture)@EffectiveSuffix
+     </div>
+ 
+     <!-- Optional subtitle -->
+@@ -151,7 +147,8 @@
+     public string? Icon { get; set; }
+ 
+     /// <summary>
+-    /// Animate the number on load
++    /// No-op (retained for call-site compatibility). CLC-DES-040 M3 forbids count-up; the figure
++    /// always renders statically. Kept so existing callers passing this parameter still compile.
+     /// </summary>
+     [Parameter]
+     public bool AnimateNumber { get; set; } = true;
+diff --git a/src/CoralComply.Web/Components/Shared/SavedIndicator.razor b/src/CoralComply.Web/Components/Shared/SavedIndicator.razor
+new file mode 100644
+index 00000000..b07252c9
+--- /dev/null
++++ b/src/CoralComply.Web/Components/Shared/SavedIndicator.razor
+@@ -0,0 +1,25 @@
++@* CLC-DES-040 M3 item 4 — silent success (D-040-MOTION-SYSTEM, Kai; hallmark principle adopted).
++   The inline, subtle confirmation for a ROUTINE save: a small check that draws itself in next to
++   "Saved", in place of a toast. A routine save is not an event that deserves a banner — the quiet
++   inline mark is the register's whole sentence for it.
++
++   Scope note (deliberate): this is for routine saves ONLY. The import receipt and the Filing A2
++   card are DOCUMENTS / regulatory moments and keep their full ceremony — do NOT replace those with
++   this. Parent-controlled: flip Visible=true on a successful save; the check draws in once and the
++   label fades in. aria-live="polite" announces it to assistive tech. prefers-reduced-motion
++   collapses the motion (DrawnCheck + the label fade both respect it) — the mark still appears. *@
++@if (Visible)
++{
++    <span class="coral-saved-indicator" role="status" aria-live="polite" data-testid="saved-indicator">
++        <DrawnCheck Size="16" AriaLabel="@Label" />
++        <span class="coral-saved-indicator__label">@Label</span>
++    </span>
++}
++
++@code {
++    /// <summary>Set true on a successful routine save to show the inline confirmation.</summary>
++    [Parameter] public bool Visible { get; set; }
++
++    /// <summary>The confirmation label. Default "Saved".</summary>
++    [Parameter] public string Label { get; set; } = "Saved";
++}
+diff --git a/src/CoralComply.Web/wwwroot/css/03-mudblazor-overrides.css b/src/CoralComply.Web/wwwroot/css/03-mudblazor-overrides.css
+index 530c9ee6..eb0c2548 100644
+--- a/src/CoralComply.Web/wwwroot/css/03-mudblazor-overrides.css
++++ b/src/CoralComply.Web/wwwroot/css/03-mudblazor-overrides.css
+@@ -295,6 +295,39 @@ body:not(.mud-theme-dark) .theme-icon-wrap {
+     to   { opacity: 1; transform: scale(1); }
+ }
+ 
++/* ── M3 item 3: state-chip cross-fade on change (D-040-MOTION-SYSTEM, Kai) ────────────────
++   The reusable register form of the M2 resolve cross-fade: any status chip that changes value
++   opts in with `Class="coral-chip-crossfade"` to settle the new state over 150ms (opacity +
++   slight scale, ease-standard, transform+opacity only). Apply it only where the chip genuinely
++   transitions in response to a state change — NOT blanket on grid chips that re-render on every
++   data refresh (magnitude/count never animates; that is the count-up ban). Collapses under the
++   reduced-motion block. This is the same 150ms recipe as `.resolve-crossfade`, named for reuse. */
++.coral-chip-crossfade {
++    animation: resolve-crossfade-in 150ms var(--motion-ease-standard) both;
++}
++
++/* ── M3 item 4: silent-success inline confirmation (D-040-MOTION-SYSTEM, Kai) ──────────────
++   The quiet "Saved" mark for routine saves (SavedIndicator). The check draws itself in
++   (DrawnCheck primitive); the label fades in beside it over --motion-small. Muted success ink,
++   transform+opacity only. Reduced-motion: the label fade collapses via the block below and the
++   check via its own rule — the mark still shows, just without motion. */
++.coral-saved-indicator {
++    display: inline-flex;
++    align-items: center;
++    gap: 6px;
++    color: var(--mud-palette-success, #10B981);
++    font-size: 0.8125rem;
++    line-height: 1;
++}
++.coral-saved-indicator__label {
++    animation: coral-saved-label-in var(--motion-small) var(--motion-ease-standard) both;
++}
++
++@keyframes coral-saved-label-in {
++    from { opacity: 0; transform: translateX(-2px); }
++    to   { opacity: 1; transform: translateX(0); }
++}
++
+ /* ── M2 chevrons: bring MudBlazor's own expand-icon rotation onto the token system ──
+    CLC-DES-040 M2 item 1 (D-040-MOTION-SYSTEM). MudBlazor 7.11.0 ALREADY rotates the
+    expand-panel and nav-group chevrons 180° on `.mud-transform` — but with a hardcoded
+@@ -309,6 +342,39 @@ body:not(.mud-theme-dark) .theme-icon-wrap {
+                 visibility 0s;
+ }
+ 
++/* ── M3 item 2: dialog + drawer entrance onto the token system (D-040-MOTION-SYSTEM /
++   D-040-M3-RULINGS, Kai) ──
++   Surfaces that ARRIVE (a dialog opening, the mobile drawer sliding in) do so over
++   --motion-medium (240ms), one-way ease-standard, transform + opacity only. The dialog rises
++   a few px as it fades — the register's "arrive" for a modal moment; the scrim fades with it.
++   No layout properties animate. One-shot on open (`both` holds the settled state); the global
++   + local reduced-motion blocks collapse it to an instant appear. The drawer's own width
++   collapse tween is retargeted onto the token in 05-navigation.css (a one-token change).
++
++   DOUBLE-TRANSFORM CHECK (D-040-M3-RULINGS, Kai): MudBlazor's bundle already animates
++   `.mud-dialog` with `animation: mud-open-dialog-center .1s ... both`. This file loads AFTER
++   MudBlazor at equal specificity, so the `animation` shorthand below REPLACES MudBlazor's on the
++   same element — exactly one animation runs, so no element ever carries two transforms. The
++   overlay rule animates opacity ONLY (no transform), so it cannot double up either. */
++.mud-dialog {
++    animation: motion-dialog-in var(--motion-medium) var(--motion-ease-standard) both;
++}
++
++@keyframes motion-dialog-in {
++    from { opacity: 0; transform: translateY(8px); }
++    to   { opacity: 1; transform: translateY(0); }
++}
++
++.mud-overlay-dialog .mud-overlay,
++.mud-overlay.mud-overlay-scrim {
++    animation: motion-overlay-in var(--motion-medium) var(--motion-ease-standard) both;
++}
++
++@keyframes motion-overlay-in {
++    from { opacity: 0; }
++    to   { opacity: 1; }
++}
++
+ /* ===== CARDS ===== */
+ 
+ .mud-paper {
+@@ -905,17 +971,27 @@ body:not(.mud-theme-dark) .theme-icon-wrap {
+        usually never even applied — this is the CSS-level guarantee for any other entry point.) */
+     .drawn-check__path,
+     .dashed-ring__solid,
+-    .resolve-crossfade {
++    .resolve-crossfade,
++    .mud-dialog,
++    .mud-overlay-dialog .mud-overlay,
++    .mud-overlay.mud-overlay-scrim,
++    .coral-chip-crossfade {
+         animation: none;
+     }
+     .drawn-check__path,
+     .dashed-ring__solid {
+         stroke-dashoffset: 0;
+     }
+-    .resolve-crossfade {
++    .resolve-crossfade,
++    .mud-dialog,
++    .coral-chip-crossfade,
++    .coral-saved-indicator__label {
+         opacity: 1;
+         transform: none;
+     }
++    .coral-saved-indicator__label {
++        animation: none;
++    }
+ }
+ 
+ /* ===== PRINT OVERRIDES ===== */
+diff --git a/src/CoralComply.Web/wwwroot/css/05-navigation.css b/src/CoralComply.Web/wwwroot/css/05-navigation.css
+index 32407b33..9266cf5c 100644
+--- a/src/CoralComply.Web/wwwroot/css/05-navigation.css
++++ b/src/CoralComply.Web/wwwroot/css/05-navigation.css
+@@ -19,7 +19,10 @@
+                 var(--deep-sea-dark, #00263D) 100%);
+     position: relative;
+     overflow: hidden;
+-    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
++    /* CLC-DES-040 M3 item 2: the drawer collapse/expand width tween retargeted off the
++       off-token 0.3s onto --motion-medium (240ms) + the reversible easing (it opens both
++       ways). Same "one token system" retarget the M2 chevron used; not new motion. */
++    transition: width var(--motion-medium) var(--motion-ease-reversible);
+ }
+ 
+ /* Flowing Current Background Pattern */
+@@ -193,6 +196,38 @@
+     }
+ }
+ 
++/* CLC-DES-040 M3 item 1 (D-040-MOTION-SYSTEM / D-040-M3-RULINGS, Kai): one-time nav ENTRANCE.
++   A subtle fade-up cascade across the top-level nav items as the shell first paints — the
++   register's "arrive, then rest" sentence for the sidebar. Pure CSS keyed to element mount,
++   so it plays once per circuit and NEVER on a data refresh or same-context re-render (Blazor
++   diffs the persistent MudNavMenu rather than recreating it; only genuinely new sections that
++   appear after a context switch will fade in, which is a real appearance, not a refresh).
++   Transform + opacity only.
++
++   TIMING (ratified, D-040-M3-RULINGS, Kai — the #4062 spec text is amended in writing here, not
++   silently): per-item duration = --motion-medium (240ms), stagger step 20ms, cap at 8 items
++   (items 9+ share the 8th's delay and arrive together). Each individual animation stays under
++   the 300ms register cap; the whole cascade tail is bounded — the last item starts at 140ms and
++   ends at 380ms, under the ratified 400ms sequence-tail hard ceiling. (A ~100ms per-item entrance
++   read as flicker; the 240ms cascade reads as grace — Kai's ratification of Anya's reading.)
++   Collapses under the nav reduced-motion block below. */
++.coral-nav-content .mud-navmenu > * {
++    animation: coral-nav-entrance var(--motion-medium) var(--motion-ease-standard) both;
++}
++.coral-nav-content .mud-navmenu > *:nth-child(1) { animation-delay: 0ms; }
++.coral-nav-content .mud-navmenu > *:nth-child(2) { animation-delay: 20ms; }
++.coral-nav-content .mud-navmenu > *:nth-child(3) { animation-delay: 40ms; }
++.coral-nav-content .mud-navmenu > *:nth-child(4) { animation-delay: 60ms; }
++.coral-nav-content .mud-navmenu > *:nth-child(5) { animation-delay: 80ms; }
++.coral-nav-content .mud-navmenu > *:nth-child(6) { animation-delay: 100ms; }
++.coral-nav-content .mud-navmenu > *:nth-child(7) { animation-delay: 120ms; }
++.coral-nav-content .mud-navmenu > *:nth-child(n+8) { animation-delay: 140ms; }
++
++@keyframes coral-nav-entrance {
++    from { opacity: 0; transform: translateY(6px); }
++    to   { opacity: 1; transform: translateY(0); }
++}
++
+ /* Link Icons — CLC-DES-040 M2 item 2 (D-040-MOTION-SYSTEM, Kai): nav-active fill.
+    Ruled: inactive icons rest at 0.72 opacity in the sidebar ink; activation cross-fades
+    to full opacity in Reef Aqua alongside the existing active background, 180ms ease-out.
+@@ -385,6 +420,13 @@
+     .mud-drawer::before {
+         animation: none;
+     }
++
++    /* M3 item 1: nav entrance collapses to the settled state (no fade-up). */
++    .coral-nav-content .mud-navmenu > * {
++        animation: none;
++        opacity: 1;
++        transform: none;
++    }
+ }
+ 
+ /* Mobile Adjustments */
