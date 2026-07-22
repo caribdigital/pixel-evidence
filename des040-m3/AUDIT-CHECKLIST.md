@@ -34,8 +34,11 @@ Kai's stated checklist, each item addressed:
 - [x] **D-040-M3-RULINGS manifest entry scoped** — added to `docs/decisions/RULING_ID_MANIFEST.md`
   and cited by the M3 CSS; `RulingIdManifestInvariantTests` green.
 
-## Two stills (pending capture — Dev fixture)
-- SavedIndicator beside its save button, both themes (weight + placement).
-- One open dialog (the rise+fade settled state).
+## Two stills — DELIVERED (stills/ folder, staging sha 00de2a48)
+- `stills/M3-saved-indicator-light-00de2a48.png` + `...-dark-...` — the inline "Saved" mark beside
+  the save button on Profile Settings, both themes (weight + placement).
+- `stills/M3-open-dialog-00de2a48.png` — the Add-Location MudDialog open + settled over the dimmed
+  scrim (the M3 rise+fade + overlay fade).
 
-Robbie's staging hand covers feel per the close protocol.
+Captured fully automated via the capture-m3-stills.yml workflow (Playwright against staging, TestAuth
+bypass). Robbie's staging hand covers feel per the close protocol.
