@@ -1,0 +1,10 @@
+file	surface	base	sha
+C1-review-four-states-light-916584c9.png	review grid, light, all four ruled states	https://stg-comply.coralledger.com	916584c9
+C1-review-four-states-dark-916584c9.png	review grid, dark	https://stg-comply.coralledger.com	916584c9
+C2-credit-note-chip-916584c9.png	Credit-note chip focus (Line 4)	https://stg-comply.coralledger.com	916584c9
+C3-suggestion-unconfirmed-marker-916584c9.png	F-202 marker + all four states in frame	https://stg-comply.coralledger.com	916584c9
+C4-cross-period-duplicate-916584c9.png	cross-period Duplicate focus	https://stg-comply.coralledger.com	916584c9
+C5-receipt-partial-excluded-held-916584c9.png	CLEAN receipt: Imported 1 / Held 2 / Excluded 1 / Failed 0	https://stg-comply.coralledger.com	916584c9
+C6-receipt-error-detail-916584c9.png	receipt bottom scroll (clean run)	https://stg-comply.coralledger.com	916584c9
+C5-ANOMALY-receipt-row-vanish-916584c9.png	ANOMALY receipt: 4 rows -> 1/0/1/1, one row unaccounted (issue 4132)	https://stg-comply.coralledger.com	916584c9
+C6-ANOMALY-no-error-list-916584c9.png	ANOMALY receipt: failed snackbar, no error list rendered (issue 4135)	https://stg-comply.coralledger.com	916584c9
