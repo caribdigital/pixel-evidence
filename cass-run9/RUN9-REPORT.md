@@ -103,3 +103,38 @@ the ruled flow are now exercised end-to-end every night.
 - One prod query for Robbie (readonly-sql is staging-only): current count of
   credit notes re-held by the demotion —
   SELECT COUNT(*) FROM "Transactions" WHERE "Category" ILIKE 'CreditNoteIssued' AND "Status" = 'PendingReview';
+
+---
+
+## Addendum 2026-08-01 — the run-9 ruling batch is EXECUTED and on prod (b5fac446)
+
+All five decisions actioned; 7th train shipped (Reef GREEN 32/32 run 30717846794;
+prod sha flip 357dfc4a -> b5fac446 verified, live 200, root 200).
+
+1. **CN-NHC-0001 answered** as "Price or consideration changed" via the ruled dialog
+   (Nassau Harbour Owner). Mini-witness above: W1 still + the signed
+   TRANSACTION_CREDIT_NOTE_BASIS_RESOLVED entry (2026-08-01T19:28:15Z). The row sits
+   at the promote step — one deliberate click in the queue and January can generate.
+2. **Ratified copy flags flipped** — chip + caption now marked ratified verbatim in
+   source and pins.
+3. **Enumeration shipped**: receipt lines name every blocking reason ("held for
+   category not confirmed; credit-note reason not answered"), the import grid stacks
+   an "Also held until its category is confirmed" caption, the review queue stacks a
+   "Reason needed" chip beside the category state. Mutation-checked.
+4. **Placeholder-first shipped**: the quarterly pre-selection and the turnover reseed
+   are gone; required at model level + submit gate; the turnover-derived value is a
+   labeled "Suggested from turnover... (pending Comptroller determination)" applied
+   only by an explicit click.
+5. **Case-B witness** remains pending on reality; pins hold.
+
+Light confirm, staging leg: **0** post-draft returns (Lodged/Filed/
+AwaitingDirConfirmation) ever overlapped a fallback-path credit note. Prod twin on
+Robbie's channel, prediction zero.
+
+**New find for the record — #4139** (the #4007 class, surfaced by this train's AMBER
+and pinned by trace + server logs): CS A1's proceed-to-attestation button silently
+swallows the click while the user's identity is still resolving — no navigation, no
+snackbar, no log. On the attestation pathway, a slow circuit gives a practitioner a
+dead button with no explanation. Filed with the trace evidence; fix is the #4007
+identity-gate pattern. Ops nit executed: nothing was dispatched inside the deploy
+bracket this train.
