@@ -70,3 +70,13 @@ starting.
   confirms", "rejected" do not survive on the page.
 - **F-216.2 interim**: the "Preferred method for submitting VAT returns" helper is deleted.
 - **F-216.3**: your interim intro line ships verbatim; J-FILINGPREFS sits with Julian.
+
+---
+
+## Addendum — the Q-AMEND evidence ask, complete
+
+Amendment-record counts (`SELECT COUNT(*) FROM "VATReturns" WHERE "IsAmendment" = true`):
+**staging = 0** (readonly-sql, verified) · **prod = 0** (run by Robbie on the prod access path).
+Prediction met in both environments — no amendment records exist anywhere; the gated-off code
+never produced data. The Amend action is gated off on `4f9f9f51` (live on prod) with the ruled
+absence pin across every return state.
