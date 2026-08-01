@@ -40,3 +40,25 @@ correction migration affected exactly the one intended row.
 - `CN-NHC-0001` → `Status = PendingReview`, `CreditNoteAdjustmentBasis = NULL`
   (the legacy demotion; zero Processed basis-less credit notes remain).
 - Nassau Harbour `filing_frequency = 'monthly'`.
+
+## Addendum 2026-08-01 — decision 1 executed: CN-NHC-0001 answered (mini-witness)
+
+- `W1-cn-nhc-0001-dialog-answered-preconfirm-72d92f0f.png` — the resolution dialog on
+  staging, "Price or consideration changed" selected, note field citing the run-9
+  ruling, immediately before Confirm. Driven as the Nassau Harbour Owner.
+- **Audit entry (immutable_audit_entries, business 90790032-19f9-4798-86df-0fca87e29813):**
+  `TRANSACTION_CREDIT_NOTE_BASIS_RESOLVED` — "Resolved credit-note adjustment basis to
+  ConsiderationChanged for 1 transaction(s) awaiting review." — actor
+  ef273a3c-e673-4a12-b579-ff20be00b15d — 2026-08-01T19:28:15.507823Z.
+- **Row state:** CN-NHC-0001 `Status = PendingReview`, `CreditNoteAdjustmentBasis =
+  ConsiderationChanged`. The answer never promotes: the standard promote disposition
+  (one deliberate click in the queue) remains before January generates — per the
+  two-step discipline.
+
+## Addendum 2026-08-01 — the light confirm (staging leg)
+
+Query: post-draft returns (`Lodged`/`Filed`/`AwaitingDirConfirmation` — the actual
+status strings on staging) whose period overlaps a `CreditNoteIssued` transaction with
+no line items (the fallback path that carried the Math.Abs L4 sign defect).
+**Result: 0 rows.** No lodged artifact on staging ever rode the defective path with a
+credit note. The prod twin of this query is on Robbie's channel; prediction zero.
