@@ -62,3 +62,38 @@ status strings on staging) whose period overlaps a `CreditNoteIssued` transactio
 no line items (the fallback path that carried the Math.Abs L4 sign defect).
 **Result: 0 rows.** No lodged artifact on staging ever rode the defective path with a
 credit note. The prod twin of this query is on Robbie's channel; prediction zero.
+
+## Addendum 2026-08-02 — the last act executed: promotion + January generation
+
+**Promotion (the first live pass through the reason gate):**
+- `W3-cn-nhc-0001-promote-confirm-dialog-b5fac446.png` — the two-step promote confirm,
+  reviewer note citing the run-9 ruling, immediately before Confirm.
+- `W4-cn-nhc-0001-promoted-queue-clear-b5fac446.png` — the queue after: the credit note
+  promoted through the gate (basis answered, so the gate admitted it).
+
+**January 2026 generation (Nassau Harbour):**
+- `W5-january-selected-generate-dialog-b5fac446.png` — January (3) selected, period
+  Jan 1 - Jan 31, 2026.
+- `W5b-january-preview-figures-b5fac446.png` — the Return Preview:
+  **Total Output VAT B$600.00 · Total Input VAT B$0.00 · Net VAT Due B$600.00 ·
+  Transactions Included 3.**
+- `W6-january-generated-returns-grid-b5fac446.png` — the Draft return on the grid.
+
+**The honest divergence from the expectation (600.00 / 200.00 / 400.00):** output is
+exactly 600.00 (three January STANDARD sales: VAT 100 + 200 + 300). Input is **0.00**,
+so net is **600.00**, because Nassau Harbour has **zero purchase transactions dated in
+January 2026** — the input-side 200.00 presupposes the purchases leg, which has not
+landed on this business. The generator computed faithfully from what exists; the Draft
+regenerates the moment the purchases arrive. Reported, not patched.
+
+DB witness: VATReturns row (Draft, 2026-01-01..2026-01-31) TotalOutputVAT=600.00,
+TotalInputVAT=0.00, NetVATDue=600.00; January transactions are 3 Output STANDARD rows
+(1000/100, 2000/200, 3000/300), no Input rows.
+
+**Exact still URLs (per Cass's ask):**
+- W1: https://raw.githubusercontent.com/caribdigital/pixel-evidence/trunk/cass-run9/W1-cn-nhc-0001-dialog-answered-preconfirm-72d92f0f.png
+- W3: https://raw.githubusercontent.com/caribdigital/pixel-evidence/trunk/cass-run9/W3-cn-nhc-0001-promote-confirm-dialog-b5fac446.png
+- W4: https://raw.githubusercontent.com/caribdigital/pixel-evidence/trunk/cass-run9/W4-cn-nhc-0001-promoted-queue-clear-b5fac446.png
+- W5: https://raw.githubusercontent.com/caribdigital/pixel-evidence/trunk/cass-run9/W5-january-selected-generate-dialog-b5fac446.png
+- W5b: https://raw.githubusercontent.com/caribdigital/pixel-evidence/trunk/cass-run9/W5b-january-preview-figures-b5fac446.png
+- W6: https://raw.githubusercontent.com/caribdigital/pixel-evidence/trunk/cass-run9/W6-january-generated-returns-grid-b5fac446.png
