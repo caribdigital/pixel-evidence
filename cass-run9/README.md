@@ -97,3 +97,22 @@ TotalInputVAT=0.00, NetVATDue=600.00; January transactions are 3 Output STANDARD
 - W5: https://raw.githubusercontent.com/caribdigital/pixel-evidence/trunk/cass-run9/W5-january-selected-generate-dialog-b5fac446.png
 - W5b: https://raw.githubusercontent.com/caribdigital/pixel-evidence/trunk/cass-run9/W5b-january-preview-figures-b5fac446.png
 - W6: https://raw.githubusercontent.com/caribdigital/pixel-evidence/trunk/cass-run9/W6-january-generated-returns-grid-b5fac446.png
+
+## Addendum 2026-08-02 (later) — 600 / 200 / 400: the day ends where Cass said it would
+
+Her purchases landed at 01:09Z (two minutes after the first generation), were confirmed,
+and the January Draft was RECALCULATED through the grid's ruled Recalculate flow:
+
+- `W7-review-categories-purchases-b5fac446.png` — the Review Categories surface (the
+  F-217 branch frame) as it stands for the ten purchases.
+- `W8-january-recalculated-grid-b5fac446.png` — the VAT Returns grid:
+  **OUTPUT VAT B$600.00 · INPUT VAT B$200.00 · NET VAT B$400.00**, due date
+  2026-02-21, and the honest overdue banner: "VAT Return OVERDUE by 162 days: was due
+  February 21, 2026 (January 2026)". Charts read Jan '26 B$400 / Input Credit B$200 /
+  Net VAT Due B$400.
+- DB witness: VATReturns (Draft, 2026-01) TotalOutputVAT=600.00, TotalInputVAT=200.00,
+  NetVATDue=400.00.
+
+W URLs:
+- W7: https://raw.githubusercontent.com/caribdigital/pixel-evidence/trunk/cass-run9/W7-review-categories-purchases-b5fac446.png
+- W8: https://raw.githubusercontent.com/caribdigital/pixel-evidence/trunk/cass-run9/W8-january-recalculated-grid-b5fac446.png
