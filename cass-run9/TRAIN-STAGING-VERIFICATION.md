@@ -63,3 +63,38 @@ otherwise have fired against production's schema.
 - The dialog copy is flagged pending your ratification.
 - F-250 (#4160) is unremediated by design: the 16 mis-tenanted rows await the F-247
   root cause, and the ordered purge is yours to authorize.
+
+---
+
+## Addendum 2026-08-02 (final) — PROD IS LIVE on `f744edbb`
+
+**Ladder verified:** sha flipped from `b5fac446` → `f744edbb`, `/health/live` 200, root 200,
+migration preflight passed (140 migrations against a fresh Postgres 16). Reef **GREEN 32/32** on
+the identical sha (run 30771667351) before the deploy.
+
+**Shipped to production:** the 8-leg gating train (F-226, F-230, F-236, F-235, F-244, W1 service +
+UI, F-237 sweep) plus Cass's four Filing-Centre rulings (F-239, F-241, F-242, F-245's copy half),
+the Nassau period regeneration, the void's mirror reset, and Cass's ratified A2/A3 amendments.
+
+**Deliberately NOT shipped:** the Help-guide citation strip (B1). The canon records
+§47A(3)(a)/(3)(b)/(4) as PRIMARY from the 2026-06-08 Cass+Julian co-read; B1's "unsealed" premise
+is contradicted by that record, and the canon forbids changing citations in either direction
+without a co-read. Reverted, filed as **#4161**, routed to Julian.
+
+## Nassau, fixed — the replacement for the Q1/Q2 screenshot
+
+- `F214-1-nassau-generate-dialog-f744edbb.png` — the Generate dialog for Nassau Harbour: a **Month**
+  selector reading **August**, period "Aug 1, 2026 – Aug 31, 2026". No Quarter selector.
+- `F214-2-nassau-month-options-open-f744edbb.png` — the month options open.
+
+**Database (staging):** Nassau now holds **24 monthly** periods (16 Future, 1 InProgress, 6 Overdue,
+1 PendingFiling) and **zero** quarterly rows — down from 8 quarterly and no monthly.
+
+**Root cause, recorded:** the 2026-08-01 correction set `filing_frequency` in raw SQL, bypassing the
+service that owns period regeneration. Cass's permanent rule now applies retroactively, and her
+standing rule — data corrections run through the service that owns the invariant, never raw SQL —
+is on the record for the next one.
+
+**Still stale:** January's two `filing_preparations` rows (status 4). The void that produced them
+ran before `MarkVoidedByReturnAsync` shipped, so the code prevents recurrence but does not repair
+history. Repair must call the service. Filed with **#4162**.
